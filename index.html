@@ -234,7 +234,7 @@ body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min
   #escalaDays{display:none!important;}
   #pdfView{display:block!important;}
   .pdf-wrap{padding:0 2mm;background:white;position:relative;overflow:hidden;}
-  .pdf-wrap::before{content:'';position:absolute;left:-19mm;top:-18mm;width:62mm;height:42mm;border-top:6px solid #C99322;border-radius:0 0 62mm 0;transform:rotate(-11deg);z-index:0;}
+  .pdf-wrap::before{content:'';position:absolute;left:-22mm;top:-21mm;width:74mm;height:52mm;border-top:7px solid #C99322;border-radius:0 0 70mm 0;transform:rotate(-11deg);z-index:0;}
   .pdf-header{position:relative;z-index:1;display:grid;grid-template-columns:30mm 1fr 45mm;gap:5mm;align-items:center;margin-bottom:2mm;padding:1.5mm 0 0 2mm;color:#08245A;min-height:35mm;break-inside:avoid;page-break-inside:avoid;}
   .pdf-saint-img{width:27mm;height:34mm;align-self:end;object-fit:cover;object-position:center 12%;border-radius:14px;border:1.5px solid #F0D98A;box-shadow:0 2px 6px rgba(8,36,90,0.16);}
   .pdf-brand{font-family:'Lato',sans-serif;font-size:30px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;line-height:0.88;color:#08245A;}
@@ -785,7 +785,6 @@ function openAnivModal(id){
   const m=state.members.find(x=>x.id===id);if(!m)return;
   state.anivContext=m;
   const nasc=parseNascimento(m.nascimento);if(!nasc)return;
-  const previa=mensagemAniversario(m).replace(/\*/g,'').replace(/\n/g,'<br>');
   document.getElementById('anivModalContent').innerHTML=`
     <div style="text-align:center;margin-bottom:16px;">
       <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;margin:0 auto 10px;border:3px solid var(--gold);">
@@ -796,7 +795,11 @@ function openAnivModal(id){
     </div>
     <div style="background:var(--cream);border-radius:10px;padding:14px;font-size:13px;line-height:1.8;color:var(--text-muted);">
       <div style="font-weight:700;color:var(--text);margin-bottom:6px;">Previa da mensagem:</div>
-      ${previa}
+      Hoje temos aniversariante!<br><br>
+      Parabens, ${m.nome}!<br><br>
+      Que Nossa Senhora te cubra com seu manto de amor e te conduza sempre pelos caminhos de Jesus.<br>
+      Muitas felicidades, saude e paz.<br><br>
+      Viva ${m.nome.split(' ')[0]}!
     </div>
     <div style="font-size:12px;color:var(--text-muted);margin-top:10px;text-align:center;">No celular, o app tentara compartilhar tambem a foto do cadastro.</div>`;
   document.getElementById('anivModal').classList.add('open');
@@ -821,16 +824,10 @@ async function copiarTexto(texto){
   }
 }
 
-function mensagemAniversario(m){
-  const nome=m.nome;
-  const primeiroNome=nome.split(' ')[0];
-  return `🎉 *Hoje a nossa Pastoral está em festa!*\n\nCelebramos com alegria a vida de *${nome}*.\n\nQue Nossa Senhora te cubra com seu manto de amor, te guarde em todos os caminhos e te conduza sempre para mais perto de Jesus.\n\nQue São Tarcísio interceda por você e fortaleça em seu coração o amor pela Eucaristia e pelo serviço ao altar.\n\nReceba nosso carinho, nossa oração e nosso abraço fraterno.\n\n*Parabéns, ${primeiroNome}!* 🎂\nMuita saúde, paz, fé e muitas bênçãos neste novo ano de vida.`;
-}
-
 async function enviarAniversario(){
   const m=state.anivContext;if(!m)return;
   const nome=m.nome;const primeiroNome=nome.split(' ')[0];
-  const msg=mensagemAniversario(m);
+  const msg=`Hoje temos aniversariante!\n\nParabens, ${nome}!\n\nQue Nossa Senhora te cubra com seu manto de amor e te conduza sempre pelos caminhos de Jesus.\nMuitas felicidades, saude e paz.\n\nViva ${primeiroNome}!`;
   const shareData={title:`Aniversario de ${nome}`,text:msg};
   if(m.foto&&navigator.canShare){
     try{
