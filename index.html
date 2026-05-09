@@ -1483,6 +1483,43 @@ async function deleteSelectedEscalas(){
 window.deleteSelectedEscalas=deleteSelectedEscalas;
 
 /* ---- PDF ---- */
+function abrirJanelaPDFMobile(tituloPDF, conteudoPDF){
+  const janela=window.open('','_blank');
+  if(!janela){
+    alert('O navegador bloqueou a abertura do PDF. Toque novamente em Gerar PDF e permita abrir uma nova aba.');
+    return false;
+  }
+  const links=Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l=>`<link rel="stylesheet" href="${l.href}">`).join('');
+  const cssBase=(document.querySelector('style')?.textContent||'').replace('@media print{','@media print, screen{');
+  const baseUrl=location.href.split('#')[0];
+  janela.document.open();
+  janela.document.write(`<!DOCTYPE html><html lang="pt-BR"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="${baseUrl}">
+    <title>${tituloPDF}</title>
+    ${links}
+    <style>
+      ${cssBase}
+      body{max-width:none;margin:0;background:white;padding:0;color:#08245A;}
+      #pdfView{display:block!important;}
+      .print-toolbar{position:sticky;top:0;z-index:9999;display:flex;gap:10px;align-items:center;justify-content:center;padding:12px;background:#08245A;color:white;font-family:Lato,sans-serif;}
+      .print-toolbar button{border:0;border-radius:10px;background:#C99322;color:white;padding:10px 16px;font-weight:900;font-size:14px;}
+      .print-toolbar span{font-size:12px;opacity:.9;}
+      @media print{.print-toolbar{display:none!important;}}
+    </style>
+  </head><body>
+    <div class="print-toolbar">
+      <button onclick="window.print()">Salvar PDF</button>
+      <span>Se não abrir sozinho, toque em Salvar PDF.</span>
+    </div>
+    <div id="pdfView">${conteudoPDF}</div>
+    <script>window.addEventListener('load',()=>setTimeout(()=>window.print(),450));<\/script>
+  </body></html>`);
+  janela.document.close();
+  return true;
+}
+
 function exportarPDF(){
   const{escalaMes:mes,escalaAno:ano}=state;
   const key=`${ano}-${mes}`;const escala=state.escalas[key];
@@ -1566,13 +1603,21 @@ function exportarPDF(){
       </div>
     </div>
   </div>`;
+  const tituloPDF=`Escala ${MESES[mes]} ${ano} - Paróquia Santa Maria`;
+  const conteudoPDF=document.getElementById('pdfView').innerHTML;
+  const mobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||window.innerWidth<=760;
+  if(mobile){
+    toast('Abrindo PDF...');
+    abrirJanelaPDFMobile(tituloPDF,conteudoPDF);
+    return;
+  }
   toast('Abrindo impressão...');
   if(typeof window.print!=='function'){
     alert('Seu navegador não abriu a impressão. Tente pelo menu do navegador: Compartilhar > Imprimir ou Salvar como PDF.');
     return;
   }
   const tituloAnterior=document.title;
-  document.title=`Escala ${MESES[mes]} ${ano} - Paróquia Santa Maria`;
+  document.title=tituloPDF;
   document.body.offsetHeight;
   window.print();
   setTimeout(()=>{document.title=tituloAnterior;},1000);
