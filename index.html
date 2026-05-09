@@ -556,6 +556,7 @@ body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min
     <div id="wppMissasList"></div>
     <div class="modal-actions">
       <button class="btn btn-green btn-block" onclick="enviarWhatsApp()"><i class="ri-whatsapp-line"></i> Compartilhar escala</button>
+      <button class="btn btn-gold btn-block" onclick="compartilharImagemEscala()"><i class="ri-image-line"></i> Compartilhar imagem</button>
       <button class="btn btn-outline btn-block" onclick="closeWppModal()">Cancelar</button>
     </div>
   </div>
@@ -785,6 +786,7 @@ function openAnivModal(id){
   const m=state.members.find(x=>x.id===id);if(!m)return;
   state.anivContext=m;
   const nasc=parseNascimento(m.nascimento);if(!nasc)return;
+  const previa=mensagemAniversario(m).replace(/\n/g,'<br>').replace(/\*/g,'');
   document.getElementById('anivModalContent').innerHTML=`
     <div style="text-align:center;margin-bottom:16px;">
       <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;margin:0 auto 10px;border:3px solid var(--gold);">
@@ -795,11 +797,7 @@ function openAnivModal(id){
     </div>
     <div style="background:var(--cream);border-radius:10px;padding:14px;font-size:13px;line-height:1.8;color:var(--text-muted);">
       <div style="font-weight:700;color:var(--text);margin-bottom:6px;">Previa da mensagem:</div>
-      Hoje temos aniversariante!<br><br>
-      Parabens, ${m.nome}!<br><br>
-      Que Nossa Senhora te cubra com seu manto de amor e te conduza sempre pelos caminhos de Jesus.<br>
-      Muitas felicidades, saude e paz.<br><br>
-      Viva ${m.nome.split(' ')[0]}!
+      ${previa}
     </div>
     <div style="font-size:12px;color:var(--text-muted);margin-top:10px;text-align:center;">No celular, o app tentara compartilhar tambem a foto do cadastro.</div>`;
   document.getElementById('anivModal').classList.add('open');
@@ -824,10 +822,16 @@ async function copiarTexto(texto){
   }
 }
 
+function mensagemAniversario(m){
+  const nome=m.nome;
+  const primeiroNome=nome.split(' ')[0];
+  return `🎉 *Hoje a nossa Pastoral está em festa!*\n\nCelebramos com alegria a vida de *${nome}*.\n\nQue Nossa Senhora te cubra com seu manto de amor, te guarde em todos os caminhos e te conduza sempre para mais perto de Jesus.\n\nQue São Tarcísio interceda por você e fortaleça em seu coração o amor pela Eucaristia e pelo serviço ao altar.\n\nReceba nosso carinho, nossa oração e nosso abraço fraterno.\n\n*Parabéns, ${primeiroNome}!* 🎂\nMuita saúde, paz, fé e muitas bênçãos neste novo ano de vida.`;
+}
+
 async function enviarAniversario(){
   const m=state.anivContext;if(!m)return;
   const nome=m.nome;const primeiroNome=nome.split(' ')[0];
-  const msg=`Hoje temos aniversariante!\n\nParabens, ${nome}!\n\nQue Nossa Senhora te cubra com seu manto de amor e te conduza sempre pelos caminhos de Jesus.\nMuitas felicidades, saude e paz.\n\nViva ${primeiroNome}!`;
+  const msg=mensagemAniversario(m);
   const shareData={title:`Aniversario de ${nome}`,text:msg};
   if(m.foto&&navigator.canShare){
     try{
@@ -1675,6 +1679,138 @@ async function enviarWhatsApp(){
   await compartilharTextoWhatsApp('Escala pastoral',msg);
 }
 window.enviarWhatsApp=enviarWhatsApp;
+
+function escalaSelecionadaWhatsApp(){
+  const{escalaMes:mes,escalaAno:ano}=state;
+  const key=`${ano}-${mes}`;const escala=state.escalas[key];
+  const obs=state.obsCalendario[`${ano}-${mes}`]||{};
+  const selecionados=Array.from(document.querySelectorAll('#wppMissasList .wpp-check-item.selected'));
+  return selecionados.map(el=>{
+    const rawId=el.id.replace('wpp-','');
+    const parts=rawId.split('-');
+    const dia=parseInt(parts[0]);
+    const hora=parts[1]==='9h'?'9h':'19h';
+    const dow=new Date(ano,mes,dia).getDay();
+    const missa=escala.find(m=>m.dia===dia&&m.hora===hora);
+    if(!missa)return null;
+    return{mes,ano,dia,hora,dow,missa,dadosDia:obs[dia]||{}};
+  }).filter(Boolean);
+}
+
+function nomesPorFuncao(missa){
+  const pick=(...nomes)=>missa.funcoes.find(f=>nomes.includes(f.nome));
+  const missal=pick('Missal');
+  const procissao=pick('Procissão','ProcissÃ£o','ProcissÃƒÂ£o');
+  const turibulo=pick('Turíbulo','TurÃ­bulo','TurÃƒÂ­bulo');
+  const naveta=pick('Naveta');
+  const cred2=pick('Credência 2','CredÃªncia 2','CredÃƒÂªncia 2');
+  const velas=missa.funcoes.filter(f=>f.nome.startsWith('Vela'));
+  const credencas=missa.funcoes.filter(f=>['Credência','CredÃªncia','CredÃƒÂªncia'].includes(f.nome));
+  const ignorar=['Missal','Procissão','ProcissÃ£o','ProcissÃƒÂ£o','Turíbulo','TurÃ­bulo','TurÃƒÂ­bulo','Naveta','Credência 2','CredÃªncia 2','CredÃƒÂªncia 2','Vela 1','Vela 2','Credência','CredÃªncia','CredÃƒÂªncia'];
+  const extras=missa.funcoes.filter(f=>!ignorar.includes(f.nome));
+  const linhas=[];
+  if(missal?.membroNome)linhas.push(['Missal',missal.membroNome]);
+  if(procissao?.membroNome)linhas.push(['Cerimoniário',procissao.membroNome]);
+  if(turibulo?.membroNome&&naveta?.membroNome)linhas.push(['Turíbulo/Naveta',`${turibulo.membroNome} e ${naveta.membroNome}`]);
+  else if(turibulo?.membroNome)linhas.push(['Turíbulo',turibulo.membroNome]);
+  else if(naveta?.membroNome)linhas.push(['Naveta',naveta.membroNome]);
+  if(cred2?.membroNome)linhas.push(['Acólito credência',cred2.membroNome]);
+  if(velas.some(v=>v.membroNome))linhas.push(['Velas',velas.filter(v=>v.membroNome).map(v=>v.membroNome).join(' e ')]);
+  if(credencas.some(c=>c.membroNome))linhas.push(['Credência',credencas.filter(c=>c.membroNome).map(c=>c.membroNome).join(', ')]);
+  extras.forEach(f=>{if(f.membroNome)linhas.push([f.nome,f.membroNome]);});
+  return linhas;
+}
+
+function montarMensagemEscala(itens){
+  let msg='✨ *Escala dos Coroinhas e Acólitos* ✨\n\nBom dia, famílias!\nSegue com carinho a escala das próximas missas.\n\n';
+  itens.forEach(item=>{
+    const{dia,hora,dow,missa,dadosDia}=item;
+    if(dadosDia.bloqueado){
+      msg+=`🚫 *${DIAS_PT[dow]} - ${dia}/${item.mes+1} às ${hora}*\nNão haverá missa.\n\n`;
+      return;
+    }
+    const obsTexto=dadosDia.obs?` — ${dadosDia.obs}`:'';
+    msg+=`🕊️ *${DIAS_PT[dow]} - ${dia}/${item.mes+1} às ${hora}*\nMissa${missa.adoracao?' com Adoração':''}${obsTexto}\n`;
+    nomesPorFuncao(missa).forEach(([funcao,nome])=>{msg+=`• *${funcao}:* ${nome}\n`;});
+    msg+='\n';
+  });
+  msg+='⏰ *Lembrete:* chegar com 30 minutos de antecedência.\n';
+  msg+='👧 Meninas: cabelo preso.\n';
+  msg+='📸 Mamães e papais que estiverem na missa, tirem fotos e mandem no privado.\n\n';
+  msg+='Obrigada pela disponibilidade e pelo carinho de sempre. Que São Tarcísio interceda por todos nós! 🙏';
+  return msg;
+}
+
+async function enviarWhatsApp(){
+  const itens=escalaSelecionadaWhatsApp();
+  if(!itens.length){alert('Selecione pelo menos uma missa.');return;}
+  closeWppModal();
+  await compartilharTextoWhatsApp('Escala pastoral',montarMensagemEscala(itens));
+}
+window.enviarWhatsApp=enviarWhatsApp;
+
+function roundedRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+}
+function wrapCanvasText(ctx,text,x,y,maxWidth,lineHeight){
+  const words=String(text).split(' ');let line='';let yy=y;
+  words.forEach(word=>{const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){ctx.fillText(line,x,yy);line=word;yy+=lineHeight;}else line=test;});
+  if(line){ctx.fillText(line,x,yy);yy+=lineHeight;}
+  return yy;
+}
+
+async function gerarImagemEscalaBlob(itens){
+  const w=1080,pad=52,headH=250,footerH=180;
+  const extraLinhas=itens.reduce((s,item)=>s+(item.dadosDia.bloqueado?1:Math.max(1,nomesPorFuncao(item.missa).length)),0);
+  const h=Math.max(900,headH+itens.length*74+extraLinhas*32+footerH);
+  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#FFFFFF';ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#08245A';ctx.fillRect(0,0,w,170);
+  ctx.fillStyle='#C99322';ctx.beginPath();ctx.arc(-20,-10,170,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#FFFFFF';ctx.font='900 54px Lato, Arial';ctx.fillText('ESCALA',pad,78);
+  ctx.font='900 29px Lato, Arial';ctx.fillText('COROINHAS E ACÓLITOS',pad,120);
+  ctx.fillStyle='#F0D98A';ctx.font='800 18px Lato, Arial';ctx.fillText('PARÓQUIA SANTA MARIA - DIOCESE DE PIRACICABA',pad,154);
+  ctx.fillStyle='#FFFFFF';roundedRect(ctx,w-310,42,250,70,16);ctx.fill();
+  ctx.fillStyle='#08245A';ctx.font='900 28px Lato, Arial';ctx.fillText(`${MESES[itens[0].mes].toUpperCase()} ${itens[0].ano}`,w-280,87);
+  let y=210;
+  itens.forEach(item=>{
+    const linhas=nomesPorFuncao(item.missa);
+    const cardH=72+(item.dadosDia.bloqueado?36:Math.max(1,linhas.length)*32);
+    ctx.fillStyle='#F9FBFF';roundedRect(ctx,pad,y,w-pad*2,cardH,18);ctx.fill();ctx.strokeStyle='#D7E2F3';ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle='#08245A';roundedRect(ctx,pad+20,y-16,590,48,10);ctx.fill();
+    ctx.fillStyle='#FFFFFF';ctx.font='900 20px Lato, Arial';ctx.fillText(`${DIAS_PT[item.dow].toUpperCase()} • ${String(item.dia).padStart(2,'0')}/${String(item.mes+1).padStart(2,'0')} • ${item.hora}`,pad+42,y+14);
+    ctx.fillStyle='#08245A';ctx.font='900 23px Lato, Arial';ctx.fillText(`Missa${item.missa.adoracao?' com Adoração':''}`,pad+28,y+62);
+    if(item.dadosDia.bloqueado){ctx.fillStyle='#8B1A1A';ctx.font='800 20px Lato, Arial';ctx.fillText('Não haverá missa.',pad+28,y+98);}
+    else{let yy=y+98;ctx.font='800 20px Lato, Arial';ctx.fillStyle='#08245A';linhas.forEach(([funcao,nome])=>{ctx.fillText(`${funcao}: ${nome}`,pad+28,yy);yy+=32;});if(!linhas.length){ctx.fillStyle='#6B7A99';ctx.fillText('Servidores a definir.',pad+28,yy);}}
+    y+=cardH+24;
+  });
+  ctx.fillStyle='#FBFCFF';roundedRect(ctx,pad,y,w-pad*2,110,18);ctx.fill();ctx.strokeStyle='#E3E8F2';ctx.stroke();
+  ctx.fillStyle='#08245A';ctx.font='italic 24px Lato, Arial';wrapCanvasText(ctx,'"Servir ao altar é servir com amor a Deus e à comunidade."',pad+30,y+42,w-360,30);
+  ctx.font='800 18px Lato, Arial';ctx.fillStyle='#6B7A99';ctx.fillText('— São Tarcísio',pad+30,y+92);
+  ctx.fillStyle='#08245A';roundedRect(ctx,w-330,y+24,240,64,16);ctx.fill();
+  ctx.fillStyle='#FFFFFF';ctx.font='900 20px Lato, Arial';ctx.fillText('IMPORTANTE',w-300,y+50);
+  ctx.font='700 15px Lato, Arial';ctx.fillText('Avise ausência com antecedência.',w-300,y+74);
+  return await new Promise(resolve=>canvas.toBlob(resolve,'image/png',0.95));
+}
+
+async function compartilharImagemEscala(){
+  const itens=escalaSelecionadaWhatsApp();
+  if(!itens.length){alert('Selecione pelo menos uma missa.');return;}
+  toast('Gerando imagem...');
+  const blob=await gerarImagemEscalaBlob(itens);
+  const file=new File([blob],`escala-${itens[0].ano}-${itens[0].mes+1}.png`,{type:'image/png'});
+  closeWppModal();
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    await navigator.share({title:'Escala pastoral',text:'Escala dos Coroinhas e Acólitos',files:[file]});
+    return;
+  }
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=file.name;a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast('Imagem baixada. Envie pelo WhatsApp.');
+}
+window.compartilharImagemEscala=compartilharImagemEscala;
 
 // INIT
 loadAllData();
