@@ -6,6 +6,7 @@
 <title>Pastoral dos Coroinhas e Acólitos</title>
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -222,6 +223,56 @@ body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min
 .empty-state i{font-size:48px;display:block;margin-bottom:14px;color:var(--blue-pale2);}
 .empty-state p{font-size:15px;margin-bottom:6px;}
 .inativo{opacity:0.45;}
+/* CARTAZ ESCALA */
+.cartaz-wrap{width:600px;background:#FDFAF4;font-family:'Lato',sans-serif;padding:0;border-radius:14px;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,0.15);}
+.cartaz-header{background:linear-gradient(135deg,#5C3D0E 0%,#C99322 45%,#8B5E1A 100%);padding:20px 18px 16px;display:flex;align-items:center;gap:14px;position:relative;}
+.cartaz-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5),rgba(255,255,255,0.1));}
+.cartaz-saint{width:82px;height:110px;object-fit:cover;object-position:top center;border-radius:12px;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,0.35);}
+.cartaz-title-block{flex:1;}
+.cartaz-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:900;color:#fff;line-height:0.95;text-transform:uppercase;letter-spacing:2px;text-shadow:0 2px 6px rgba(0,0,0,0.3);}
+.cartaz-subtitle{font-size:13px;font-weight:700;color:#FFE9A0;text-transform:uppercase;letter-spacing:3px;margin-top:4px;}
+.cartaz-paroquia{font-size:10.5px;color:rgba(255,255,255,0.9);margin-top:6px;}
+.cartaz-prayer{font-size:9px;color:rgba(255,255,255,0.75);font-style:italic;margin-top:2px;}
+.cartaz-mes-box{background:rgba(255,255,255,0.18);border-radius:10px;padding:10px 12px;text-align:center;border:1.5px solid rgba(255,255,255,0.4);flex-shrink:0;min-width:80px;}
+.cartaz-mes-icon{font-size:16px;margin-bottom:2px;}
+.cartaz-mes-val{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#fff;line-height:1.4;}
+.cartaz-body{padding:14px 16px;background:#FDFAF4;}
+.cartaz-dia-block{display:flex;border-radius:12px;overflow:hidden;border:1.5px solid #E8E0CC;margin-bottom:12px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.cartaz-dia-label{background:linear-gradient(170deg,#C99322 0%,#8B5E1A 100%);color:#fff;padding:14px 10px;min-width:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;flex-shrink:0;}
+.cartaz-dia-dow{font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;opacity:0.85;margin-bottom:4px;}
+.cartaz-dia-num-grande{font-family:'Playfair Display',serif;font-size:46px;font-weight:900;line-height:1;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.25);}
+.cartaz-dia-mes-ano{font-size:11px;font-weight:700;opacity:0.8;margin-top:2px;letter-spacing:0.5px;}
+.cartaz-dia-hora-tag{background:rgba(255,255,255,0.22);border-radius:20px;padding:3px 8px;font-size:10px;font-weight:700;margin-top:6px;letter-spacing:0.5px;border:1px solid rgba(255,255,255,0.3);}
+.cartaz-dia-content{flex:1;padding:10px 14px;}
+.cartaz-status-ok{color:#1E7D45;font-weight:900;font-size:11px;display:flex;align-items:center;gap:6px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
+.cartaz-status-nao{color:#C0392B;font-weight:900;font-size:14px;display:flex;align-items:center;gap:8px;padding:10px 0;text-transform:uppercase;letter-spacing:1px;}
+.cartaz-adoracao-tag{background:#FFF3CD;color:#8B5E1A;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #F0D98A;margin-left:6px;}
+.cartaz-obs{font-size:10px;color:#854F0B;font-style:italic;margin-bottom:6px;padding:4px 8px;background:#FFFBF0;border-radius:6px;border-left:3px solid #C99322;}
+.cartaz-funcoes-wrap{display:flex;flex-direction:column;gap:0;}
+.cartaz-funcao-row{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #F2EEE4;}
+.cartaz-funcao-row:last-child{border-bottom:none;}
+.cartaz-funcao-row.destaque{padding:5px 0;}
+.cartaz-funcao-icon{font-size:13px;width:18px;text-align:center;flex-shrink:0;}
+.cartaz-funcao-nome{font-size:9.5px;font-weight:800;color:#8B5E1A;text-transform:uppercase;letter-spacing:0.5px;min-width:110px;flex-shrink:0;}
+.cartaz-funcao-membros{font-size:12px;color:#1A2540;font-weight:700;}
+.cartaz-funcao-membros.destaque-nome{font-size:14px;font-weight:900;color:#0A1A3A;}
+.cartaz-funcao-membros.secundario{font-size:11.5px;font-weight:600;color:#3A4A6A;}
+.cartaz-separador{height:1px;background:linear-gradient(90deg,#E8E0CC,transparent);margin:5px 0;}
+.cartaz-footer{background:#F0EAD8;padding:12px 16px;display:flex;gap:12px;align-items:flex-start;border-top:2px solid #E8D8A0;}
+.cartaz-avisos{flex:1;font-size:9.5px;color:#4A3A1E;line-height:1.7;}
+.cartaz-avisos-title{font-weight:900;color:#7B5A1E;font-size:11px;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}
+.cartaz-quote{flex:1;background:#fff;border-radius:8px;padding:10px 12px;border-left:4px solid #C99322;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+.cartaz-quote-text{font-style:italic;font-size:10px;color:#333;line-height:1.6;}
+.cartaz-quote-author{font-size:9px;color:#8B6914;margin-top:5px;font-weight:700;}
+.cartaz-bottom{background:linear-gradient(135deg,#5C3D0E,#C99322);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;}
+.cartaz-bottom-text{font-size:9.5px;color:rgba(255,255,255,0.9);font-weight:600;}
+.img-preview-modal{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:16px;overflow-y:auto;}
+.img-preview-modal.hidden{display:none;}
+.img-preview-inner{background:#fff;border-radius:16px;padding:16px;width:100%;max-width:620px;margin:0 auto;}
+.img-preview-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--blue);margin-bottom:12px;text-align:center;font-weight:600;}
+.img-preview-canvas{width:100%;border-radius:8px;overflow:hidden;margin-bottom:14px;border:1px solid var(--cream-dark);}
+.img-preview-canvas img{width:100%;display:block;}
+.img-preview-actions{display:flex;flex-direction:column;gap:10px;}
 /* PDF PRINT */
 @media print{
   @page{size:A4 portrait;margin:4mm;}
@@ -554,8 +605,13 @@ body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min
     <input type="hidden" id="wppNumero">
     <div style="font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Selecione as missas</div>
     <div id="wppMissasList"></div>
+    <div class="form-group" style="margin-top:14px;">
+      <label class="form-label">Aviso extra para o cartaz <span style="font-weight:400;text-transform:none;letter-spacing:0;">(opcional)</span></label>
+      <textarea class="form-textarea" id="obsCartazExtra" placeholder="Ex: Missa de Primeira Comunhão. Traje especial obrigatório!" style="min-height:60px;"></textarea>
+    </div>
     <div class="modal-actions">
-      <button class="btn btn-green btn-block" onclick="enviarWhatsApp()"><i class="ri-whatsapp-line"></i> Compartilhar escala</button>
+      <button class="btn btn-primary btn-block" onclick="gerarImagemCartaz()"><i class="ri-image-line"></i> Gerar imagem da escala</button>
+      <button class="btn btn-green btn-block" onclick="enviarWhatsApp()"><i class="ri-whatsapp-line"></i> Compartilhar texto</button>
       <button class="btn btn-outline btn-block" onclick="closeWppModal()">Cancelar</button>
     </div>
   </div>
@@ -573,6 +629,21 @@ body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min
     </div>
   </div>
 </div>
+
+<!-- MODAL PREVIEW IMAGEM CARTAZ -->
+<div class="img-preview-modal hidden" id="imgPreviewModal">
+  <div class="img-preview-inner">
+    <div class="img-preview-title">Prévia da escala</div>
+    <div class="img-preview-canvas" id="imgPreviewCanvas"></div>
+    <div class="img-preview-actions">
+      <button class="btn btn-green btn-block" onclick="compartilharImagemCartaz()"><i class="ri-whatsapp-line"></i> Compartilhar no WhatsApp</button>
+      <button class="btn btn-outline btn-block" onclick="baixarImagemCartaz()"><i class="ri-download-line"></i> Baixar imagem</button>
+      <button class="btn btn-outline btn-block" onclick="fecharPreviewImagem()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div id="cartazConteudo" class="cartaz-wrap" style="position:absolute;left:-9999px;top:0;"></div>
 
 <div class="toast" id="toast"><i class="ri-checkbox-circle-line"></i> <span id="toastMsg"></span></div>
 
@@ -794,14 +865,14 @@ function openAnivModal(id){
       <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">${String(nasc.dia).padStart(2,'0')}/${String(nasc.mes).padStart(2,'0')} · ${catLabel(m.categoria)}</div>
     </div>
     <div style="background:var(--cream);border-radius:10px;padding:14px;font-size:13px;line-height:1.8;color:var(--text-muted);">
-      <div style="font-weight:700;color:var(--text);margin-bottom:6px;">Previa da mensagem:</div>
-      Hoje temos aniversariante!<br><br>
-      Parabens, ${m.nome}!<br><br>
-      Que Nossa Senhora te cubra com seu manto de amor e te conduza sempre pelos caminhos de Jesus.<br>
-      Muitas felicidades, saude e paz.<br><br>
-      Viva ${m.nome.split(' ')[0]}!
+      <div style="font-weight:700;color:var(--text);margin-bottom:6px;">Prévia da mensagem:</div>
+      🎉 Hoje temos um aniversariante no grupo! 🎂✨<br><br>
+      *Parabéns, ${m.nome}!* 🥳<br><br>
+      Que Jesus te abençoe muito neste novo ano da sua vida e que São Tarcísio, padroeiro dos coroinhas e acólitos, te ajude a continuar servindo o altar com alegria, amor e dedicação. 🙏❤️<br><br>
+      Obrigado pelo seu "sim" e por fazer parte da nossa família de coroinhas e acólitos! ✨<br><br>
+      Feliz aniversário! 🎈🎁
     </div>
-    <div style="font-size:12px;color:var(--text-muted);margin-top:10px;text-align:center;">No celular, o app tentara compartilhar tambem a foto do cadastro.</div>`;
+    <div style="font-size:12px;color:var(--text-muted);margin-top:10px;text-align:center;">No celular, o app tentará compartilhar também a foto do cadastro.</div>`;
   document.getElementById('anivModal').classList.add('open');
 }
 function closeAnivModal(){document.getElementById('anivModal').classList.remove('open');}
@@ -827,8 +898,8 @@ async function copiarTexto(texto){
 async function enviarAniversario(){
   const m=state.anivContext;if(!m)return;
   const nome=m.nome;const primeiroNome=nome.split(' ')[0];
-  const msg=`Hoje temos aniversariante!\n\nParabens, ${nome}!\n\nQue Nossa Senhora te cubra com seu manto de amor e te conduza sempre pelos caminhos de Jesus.\nMuitas felicidades, saude e paz.\n\nViva ${primeiroNome}!`;
-  const shareData={title:`Aniversario de ${nome}`,text:msg};
+  const msg=`🎉 Hoje temos um aniversariante no grupo! 🎂✨\n\n*Parabéns, ${nome}!* 🥳\n\nQue Jesus te abençoe muito neste novo ano da sua vida e que São Tarcísio, padroeiro dos coroinhas e acólitos, te ajude a continuar servindo o altar com alegria, amor e dedicação. 🙏❤️\n\nObrigado pelo seu "sim" e por fazer parte da nossa família de coroinhas e acólitos! ✨\n\nFeliz aniversário, ${primeiroNome}! 🎈🎁`;
+  const shareData={title:`Aniversário de ${nome}`,text:msg};
   if(m.foto&&navigator.canShare){
     try{
       const arquivo=await fotoDataUrlParaArquivo(m.foto,`aniversario-${primeiroNome}.jpg`);
@@ -1651,7 +1722,11 @@ function openWppModal(){
   document.getElementById('wppModal').classList.add('open');
 }
 window.openWppModal=openWppModal;
-function closeWppModal(){document.getElementById('wppModal').classList.remove('open');}
+function closeWppModal(){
+  document.getElementById('wppModal').classList.remove('open');
+  const obsEl=document.getElementById('obsCartazExtra');
+  if(obsEl)obsEl.value='';
+}
 window.closeWppModal=closeWppModal;
 
 async function compartilharTextoWhatsApp(titulo,texto){
@@ -1677,7 +1752,7 @@ async function enviarWhatsApp(){
   const selecionados=Array.from(document.querySelectorAll('#wppMissasList .wpp-check-item.selected'));
   if(!selecionados.length){alert('Selecione pelo menos uma missa.');return;}
 
-  let msg='Bom dia!\nSegue a escala:\n';
+  let msg='Bom dia 😊\nSegue a escala do fim de semana 👇\n';
 
   selecionados.forEach(el=>{
     const rawId=el.id.replace('wpp-','');
@@ -1690,44 +1765,228 @@ async function enviarWhatsApp(){
     const dadosDia=obs[dia]||{};
 
     if(dadosDia.bloqueado){
-      msg+=`\n- ${DIAS_PT[dow]} ${hora} - NAO HAVERA MISSA.`;
+      msg+=`\n❌ *${DIAS_PT[dow]} ${hora}* - NÃO HAVERÁ MISSA.`;
       return;
     }
 
     const obsTexto=dadosDia.obs?` (${dadosDia.obs})`:'';
-    msg+=`\n- ${DIAS_PT[dow]} ${hora} - Missa${missa.adoracao?' com Adoracao':''}${obsTexto}`;
+    msg+=`\n✅ *${DIAS_PT[dow]} ${hora}* - Missa${missa.adoracao?' com Adoração':''}${obsTexto}`;
 
     // Agrupar funcoes de forma organizada
     const missal=missa.funcoes.find(f=>f.nome==='Missal');
-    const procissao=missa.funcoes.find(f=>f.nome==='Procissão'||f.nome==='ProcissÃ£o');
-    const turibulo=missa.funcoes.find(f=>f.nome==='Turíbulo'||f.nome==='TurÃ­bulo');
+    const procissao=missa.funcoes.find(f=>f.nome&&f.nome.includes('Prociss'));
+    const turibulo=missa.funcoes.find(f=>f.nome&&f.nome.includes('Tur')&&f.nome.includes('bulo'));
     const naveta=missa.funcoes.find(f=>f.nome==='Naveta');
-    const cred2=missa.funcoes.find(f=>f.nome==='Credência 2'||f.nome==='CredÃªncia 2');
+    const cred2=missa.funcoes.find(f=>f.nome&&f.nome.includes('Cred')&&f.nome.includes('2'));
     const velas=missa.funcoes.filter(f=>f.nome.startsWith('Vela'));
-    const credencas=missa.funcoes.filter(f=>f.nome==='Credência'||f.nome==='CredÃªncia');
-    const extras=missa.funcoes.filter(f=>!['Missal','Procissão','ProcissÃ£o','Turíbulo','TurÃ­bulo','Naveta','Credência 2','CredÃªncia 2','Vela 1','Vela 2','Credência','CredÃªncia'].includes(f.nome));
+    const credencas=missa.funcoes.filter(f=>f.nome&&(f.nome==='Credência'||f.nome==='Credencia'));
+    const extras=missa.funcoes.filter(f=>{
+      const nome=f.nome||'';
+      return !['Missal','Prociss','Tur','Naveta','Cred','Vela'].some(base=>nome.includes(base));
+    });
 
     if(missal?.membroNome)msg+=`\nMissal: ${missal.membroNome}.`;
-    if(procissao?.membroNome)msg+=`\nCerimoniario: ${procissao.membroNome}.`;
-    if(turibulo?.membroNome&&naveta?.membroNome)msg+=`\nTuribulo/Naveta: ${turibulo.membroNome} e ${naveta.membroNome}.`;
-    else if(turibulo?.membroNome)msg+=`\nTuribulo: ${turibulo.membroNome}.`;
+    if(procissao?.membroNome)msg+=`\nCerimoniário: ${procissao.membroNome}.`;
+    if(turibulo?.membroNome&&naveta?.membroNome)msg+=`\nTuríbulo/Naveta: ${turibulo.membroNome} e ${naveta.membroNome}.`;
+    else if(turibulo?.membroNome)msg+=`\nTuríbulo: ${turibulo.membroNome}.`;
     else if(naveta?.membroNome)msg+=`\nNaveta: ${naveta.membroNome}.`;
-    if(cred2?.membroNome)msg+=`\nAcolito credencia: ${cred2.membroNome}.`;
+    if(cred2?.membroNome)msg+=`\nAcólito credência: ${cred2.membroNome}.`;
     if(velas.some(v=>v.membroNome))msg+=`\nVelas: ${velas.filter(v=>v.membroNome).map(v=>v.membroNome).join(' e ')}.`;
     if(credencas.some(c=>c.membroNome)){
       const todos=[...credencas.filter(c=>c.membroNome).map(c=>c.membroNome)];
       if(cred2?.membroNome)todos.push(cred2.membroNome);
-      msg+=`\nCredencia: ${credencas.filter(c=>c.membroNome).map(c=>c.membroNome).join(', ')}.`;
+      msg+=`\nCredência: ${credencas.filter(c=>c.membroNome).map(c=>c.membroNome).join(', ')}.`;
     }
     extras.forEach(f=>{if(f.membroNome)msg+=`\n${f.nome}: ${f.membroNome}.`;});
   });
 
-  msg+='\n\nChegar com 30 minutos de antecedencia.\nMeninas: cabelo preso.\nMamaes/Papais que estiverem na missa, tirem fotos e mandem no privado.\nObrigada!\nQue o nosso fim de semana seja tranquilo, feliz e cheio de luz.';
+  msg+='\n\n⏰ Chegar com 30 minutos de antecedência.\n👱🏼‍♀️ Meninas: cabelo preso.\n📷 Mamães/Papais que estiverem na missa, tirem fotos e mandem no privado.\nObrigada 🥰\nQue o nosso fim de semana seja tranquilo, feliz e cheio de luz 🙏❤️';
 
   closeWppModal();
   await compartilharTextoWhatsApp('Escala pastoral',msg);
 }
 window.enviarWhatsApp=enviarWhatsApp;
+
+/* ---- CARTAZ IMAGEM ---- */
+let cartazImagemURL=null;
+
+function escapeHTML(v){
+  return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+function getFuncoesCartaz(missa){
+  const funcoes=missa.funcoes||[];
+  const byName=(test)=>funcoes.find(f=>f.nome&&test(f.nome));
+  const missal=byName(n=>n==='Missal');
+  const procissao=byName(n=>n.includes('Prociss'));
+  const turibulo=byName(n=>n.includes('Tur')&&n.includes('bulo'));
+  const naveta=byName(n=>n==='Naveta');
+  const cred2=byName(n=>n.includes('Cred')&&n.includes('2'));
+  const velas=funcoes.filter(f=>f.nome&&f.nome.startsWith('Vela'));
+  const credencas=funcoes.filter(f=>f.nome&&(f.nome==='Credência'||f.nome==='Credencia')&&!f.nome.includes('2'));
+  const extras=funcoes.filter(f=>{
+    const n=f.nome||'';
+    return !['Missal','Prociss','Tur','Naveta','Cred','Vela'].some(base=>n.includes(base));
+  });
+  return{missal,procissao,turibulo,naveta,cred2,velas,credencas,extras};
+}
+
+function montarLinhasFuncoesCartaz(missa){
+  const{missal,procissao,turibulo,naveta,cred2,velas,credencas,extras}=getFuncoesCartaz(missa);
+  let html='<div class="cartaz-funcoes-wrap">';
+  const row=(icon,nome,membros,classe='secundario')=>`<div class="cartaz-funcao-row ${classe==='destaque-nome'?'destaque':''}"><span class="cartaz-funcao-icon">${icon}</span><span class="cartaz-funcao-nome">${escapeHTML(nome)}:</span><span class="cartaz-funcao-membros ${classe}">${escapeHTML(membros)}</span></div>`;
+  if(missal?.membroNome)html+=row('🏆','Missal',missal.membroNome,'destaque-nome');
+  if(procissao?.membroNome)html+=row('✝','Cerimoniário',procissao.membroNome,'destaque-nome');
+  if((missal?.membroNome)||(procissao?.membroNome))html+='<div class="cartaz-separador"></div>';
+  if(turibulo?.membroNome&&naveta?.membroNome)html+=row('⚗','Tur./Naveta',`${turibulo.membroNome} / ${naveta.membroNome}`);
+  else{
+    if(turibulo?.membroNome)html+=row('⚗','Turíbulo',turibulo.membroNome);
+    if(naveta?.membroNome)html+=row('⚗','Naveta',naveta.membroNome);
+  }
+  const todosCred=credencas.filter(c=>c.membroNome).map(c=>c.membroNome);
+  if(cred2?.membroNome)todosCred.push(cred2.membroNome);
+  if(todosCred.length)html+=row('🍷','Credência',todosCred.join(', '));
+  const velasNomes=velas.filter(v=>v.membroNome).map(v=>v.membroNome);
+  if(velasNomes.length)html+=row('🕯','Velas',velasNomes.join(' e '));
+  extras.forEach(f=>{if(f.membroNome)html+=row('•',f.nome.substring(0,16),f.membroNome);});
+  return html+'</div>';
+}
+
+function montarCartazHTML(missasSel,mes,ano,obs,obsExtra){
+  const diasNomes=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const dias=[...new Set(missasSel.map(m=>m.dia))].sort((a,b)=>a-b);
+  let blocos='';
+  dias.forEach(dia=>{
+    const dow=new Date(ano,mes,dia).getDay();
+    const missasDia=missasSel.filter(m=>m.dia===dia);
+    const dadosDia=obs[dia]||{};
+    const diaNum=String(dia).padStart(2,'0');
+    const mesNum=String(mes+1).padStart(2,'0');
+    missasDia.forEach((missa,idx)=>{
+      const separador=idx>0?'<div style="height:8px;background:#FDFAF4;"></div>':'';
+      const label=`<div class="cartaz-dia-label"${idx>0?' style="background:linear-gradient(170deg,#8B5E1A 0%,#5C3D0E 100%);"':''}>
+        <div class="cartaz-dia-dow">${idx>0?'Mesmo dia':diasNomes[dow]}</div>
+        <div class="cartaz-dia-num-grande">${diaNum}</div>
+        <div class="cartaz-dia-mes-ano">${mesNum}/${ano}</div>
+        <div class="cartaz-dia-hora-tag">🕐 ${escapeHTML(missa.hora)}</div>
+      </div>`;
+      if(dadosDia.bloqueado){
+        blocos+=`${separador}<div class="cartaz-dia-block">${label}<div class="cartaz-dia-content" style="display:flex;align-items:center;"><div class="cartaz-status-nao">❌ NÃO HAVERÁ MISSA</div></div></div>`;
+        return;
+      }
+      const obsTexto=dadosDia.obs?`<div class="cartaz-obs">${escapeHTML(dadosDia.obs)}</div>`:'';
+      const adoracao=missa.adoracao?'<span class="cartaz-adoracao-tag">+ Adoração</span>':'';
+      blocos+=`${separador}<div class="cartaz-dia-block">${label}<div class="cartaz-dia-content"><div class="cartaz-status-ok">✅ MISSA ${adoracao}</div>${obsTexto}${montarLinhasFuncoesCartaz(missa)}</div></div>`;
+    });
+  });
+  const extra=obsExtra?`<div style="margin-top:5px;padding:5px 7px;background:#FFF8E7;border-left:3px solid #C99322;border-radius:4px;font-weight:700;color:#7B5A1E;">📝 ${escapeHTML(obsExtra)}</div>`:'';
+  return `<div class="cartaz-header">
+    <img class="cartaz-saint" src="sao-tarcisio.png" alt="São Tarcísio">
+    <div class="cartaz-title-block">
+      <div class="cartaz-title">Escala</div>
+      <div class="cartaz-subtitle">Coroinhas e Acólitos</div>
+      <div class="cartaz-paroquia">⛪ Paróquia Santa Maria - Diocese de Piracicaba</div>
+      <div class="cartaz-prayer">São Tarcísio, padroeiro dos coroinhas, rogai por nós.</div>
+    </div>
+    <div class="cartaz-mes-box"><div class="cartaz-mes-icon">📅</div><div class="cartaz-mes-val">${MESES[mes]} ${ano}</div></div>
+  </div>
+  <div class="cartaz-body">${blocos}</div>
+  <div class="cartaz-footer">
+    <div class="cartaz-avisos">
+      <div class="cartaz-avisos-title">🔔 Avisos importantes</div>
+      <div>• Em caso de ausência, avisar com antecedência ao responsável.</div>
+      <div>• Chegar com 30 minutos de antecedência.</div>
+      <div>• Meninas: cabelo preso.</div>
+      <div>📷 Pais, tirem foto dos filhos na missa e mandem aqui no grupo!</div>
+      ${extra}
+    </div>
+    <div class="cartaz-quote">
+      <div style="font-size:18px;color:#C99322;font-weight:900;line-height:1;margin-bottom:4px;">“</div>
+      <div class="cartaz-quote-text">Servir ao altar é servir com amor a Deus e à comunidade.</div>
+      <div class="cartaz-quote-author">— São Tarcísio</div>
+    </div>
+  </div>
+  <div class="cartaz-bottom">
+    <span class="cartaz-bottom-text">♥ Com fé e dedicação, nosso serviço se torna oração.</span>
+    <span class="cartaz-bottom-text">Obrigada pela generosidade! 🙏</span>
+  </div>`;
+}
+
+async function gerarImagemCartaz(){
+  if(typeof window.html2canvas!=='function'){
+    alert('Não foi possível carregar o gerador de imagem. Verifique a conexão e tente novamente.');
+    return;
+  }
+  const{escalaMes:mes,escalaAno:ano}=state;
+  const key=`${ano}-${mes}`;
+  const escala=state.escalas[key];
+  if(!escala||!escala.length){toast('Nenhuma escala gerada.');return;}
+  const obs=state.obsCalendario[key]||{};
+  const selecionados=Array.from(document.querySelectorAll('#wppMissasList .wpp-check-item.selected'));
+  if(!selecionados.length){alert('Selecione pelo menos uma missa.');return;}
+  const missasSel=[];
+  selecionados.forEach(el=>{
+    const rawId=el.id.replace('wpp-','');
+    const parts=rawId.split('-');
+    const dia=parseInt(parts[0]);
+    const hora=parts[1]==='9h'?'9h':'19h';
+    const missa=escala.find(m=>m.dia===dia&&m.hora===hora);
+    if(missa)missasSel.push(missa);
+  });
+  if(!missasSel.length){alert('Nenhuma missa válida selecionada.');return;}
+  const obsExtra=(document.getElementById('obsCartazExtra')?.value||'').trim();
+  closeWppModal();
+  toast('Gerando imagem...');
+  const cartazEl=document.getElementById('cartazConteudo');
+  cartazEl.innerHTML=montarCartazHTML(missasSel,mes,ano,obs,obsExtra);
+  await new Promise(r=>setTimeout(r,700));
+  try{
+    const canvas=await window.html2canvas(cartazEl,{scale:2.5,useCORS:true,allowTaint:true,backgroundColor:'#FDFAF4',width:600,logging:false});
+    cartazImagemURL=canvas.toDataURL('image/png');
+    document.getElementById('imgPreviewCanvas').innerHTML=`<img src="${cartazImagemURL}" alt="Cartaz da escala">`;
+    document.getElementById('imgPreviewModal').classList.remove('hidden');
+  }catch(e){
+    console.error('Erro ao gerar imagem:',e);
+    toast('Erro ao gerar imagem. Tente novamente.');
+  }
+}
+window.gerarImagemCartaz=gerarImagemCartaz;
+
+function fecharPreviewImagem(){
+  document.getElementById('imgPreviewModal').classList.add('hidden');
+  cartazImagemURL=null;
+}
+window.fecharPreviewImagem=fecharPreviewImagem;
+
+async function compartilharImagemCartaz(){
+  if(!cartazImagemURL){toast('Gere a imagem primeiro.');return;}
+  try{
+    const res=await fetch(cartazImagemURL);
+    const blob=await res.blob();
+    const file=new File([blob],'escala-pastoral.png',{type:'image/png'});
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({title:'Escala Pastoral',files:[file]});
+      toast('Imagem compartilhada!');
+      return;
+    }
+  }catch(e){
+    if(e?.name==='AbortError')return;
+    console.warn('Compartilhamento de imagem indisponível:',e);
+  }
+  baixarImagemCartaz();
+  toast('Imagem baixada! Envie no grupo do WhatsApp.');
+}
+window.compartilharImagemCartaz=compartilharImagemCartaz;
+
+function baixarImagemCartaz(){
+  if(!cartazImagemURL){toast('Gere a imagem primeiro.');return;}
+  const a=document.createElement('a');
+  a.href=cartazImagemURL;
+  a.download='escala-pastoral.png';
+  a.click();
+  toast('Imagem baixada!');
+}
+window.baixarImagemCartaz=baixarImagemCartaz;
 
 // INIT
 loadAllData();
