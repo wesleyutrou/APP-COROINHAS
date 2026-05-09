@@ -485,6 +485,20 @@ body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min
   </div>
   <div class="admin-section">
     <div class="admin-toolbar">
+      <div class="card-title" style="margin:0;"><i class="ri-message-3-line"></i> Textos automáticos</div>
+      <button class="btn btn-primary btn-sm" onclick="saveAdminTexts()"><i class="ri-save-line"></i> Salvar</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Texto para acompanhar imagem da escala</label>
+      <textarea class="form-textarea" id="adminTextoEscala" style="min-height:120px;"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Texto de aniversário <span style="font-weight:400;text-transform:none;letter-spacing:0;">use {nome} e {primeiroNome}</span></label>
+      <textarea class="form-textarea" id="adminTextoAniversario" style="min-height:160px;"></textarea>
+    </div>
+  </div>
+  <div class="admin-section">
+    <div class="admin-toolbar">
       <div class="card-title" style="margin:0;"><i class="ri-user-settings-line"></i> Membros</div>
       <button class="btn btn-danger-outline btn-sm" onclick="deleteSelectedMembers()"><i class="ri-delete-bin-line"></i> Excluir</button>
     </div>
@@ -675,6 +689,10 @@ window.fsGetDoc=getDoc;
 const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const DIAS_PT=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
 const DIAS_ABREV=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const DEFAULT_TEXTOS={
+  escala:'Olá, pessoal, tudo bem? 😊\n\nSegue a escala atualizada desta semana.\n\nPor favor, confiram com atenção o dia, horário e função de cada um. Em caso de qualquer dificuldade ou necessidade de troca, avisem com antecedência.\n\nMuito obrigada pela disponibilidade e pelo carinho no serviço ao altar. 🙏',
+  aniversario:'🎉 Hoje temos um aniversariante no grupo! 🎂✨\n\n*Parabéns, {nome}!* 🥳\n\nQue Jesus te abençoe muito neste novo ano da sua vida e que São Tarcísio, padroeiro dos coroinhas e acólitos, te ajude a continuar servindo o altar com alegria, amor e dedicação. 🙏❤️\n\nObrigado pelo seu "sim" e por fazer parte da nossa família de coroinhas e acólitos! ✨\n\nFeliz aniversário, {primeiroNome}! 🎈🎁'
+};
 
 let state={
   members:[],escalas:{},obsCalendario:{},
@@ -683,10 +701,15 @@ let state={
   gerador:{mes:new Date().getMonth(),ano:new Date().getFullYear(),adoracoes:[]},
   swapContext:null,editAvatar:null,calDiaContext:null,
   showAllCats:false,calActiveTab:'obs',
-  anivContext:null,funcoesManuaisTemp:[]
+  anivContext:null,funcoesManuaisTemp:[],
+  textos:{...DEFAULT_TEXTOS}
 };
 
 function toast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+function aplicarVariaveisTexto(texto,vars){
+  return String(texto||'').replace(/\{nome\}/g,vars.nome||'').replace(/\{primeiroNome\}/g,vars.primeiroNome||'');
+}
 
 function parseNascimento(valor){
   if(!valor||typeof valor!=='string')return null;
@@ -770,6 +793,8 @@ async function loadAllData(){
     const oSnap=await getDocs(collection(db,'observacoes'));
     state.obsCalendario={};
     oSnap.docs.forEach(d=>{state.obsCalendario[d.id]=d.data().dias||{};});
+    const textosSnap=await getDoc(doc(db,'config','textos'));
+    state.textos={...DEFAULT_TEXTOS,...(textosSnap.exists()?textosSnap.data():{})};
     document.getElementById('loadingOverlay').style.display='none';
     renderDashboard();
   }catch(e){
@@ -789,6 +814,9 @@ async function saveEscalaDB(key,missas){
 }
 async function saveObsDB(key,dias){
   await setDoc(doc(db,'observacoes',key),{dias});
+}
+async function saveTextosDB(textos){
+  await setDoc(doc(db,'config','textos'),textos);
 }
 async function deleteEscalaDB(key){
   await deleteDoc(doc(db,'escalas',key));
@@ -868,11 +896,7 @@ function openAnivModal(id){
     </div>
     <div style="background:var(--cream);border-radius:10px;padding:14px;font-size:13px;line-height:1.8;color:var(--text-muted);">
       <div style="font-weight:700;color:var(--text);margin-bottom:6px;">Prévia da mensagem:</div>
-      🎉 Hoje temos um aniversariante no grupo! 🎂✨<br><br>
-      *Parabéns, ${m.nome}!* 🥳<br><br>
-      Que Jesus te abençoe muito neste novo ano da sua vida e que São Tarcísio, padroeiro dos coroinhas e acólitos, te ajude a continuar servindo o altar com alegria, amor e dedicação. 🙏❤️<br><br>
-      Obrigado pelo seu "sim" e por fazer parte da nossa família de coroinhas e acólitos! ✨<br><br>
-      Feliz aniversário! 🎈🎁
+      ${aplicarVariaveisTexto(state.textos.aniversario,{nome:m.nome,primeiroNome:m.nome.split(' ')[0]}).replace(/\n/g,'<br>')}
     </div>
     <div style="font-size:12px;color:var(--text-muted);margin-top:10px;text-align:center;">No celular, o app tentará compartilhar também a foto do cadastro.</div>`;
   document.getElementById('anivModal').classList.add('open');
@@ -900,7 +924,7 @@ async function copiarTexto(texto){
 async function enviarAniversario(){
   const m=state.anivContext;if(!m)return;
   const nome=m.nome;const primeiroNome=nome.split(' ')[0];
-  const msg=`🎉 Hoje temos um aniversariante no grupo! 🎂✨\n\n*Parabéns, ${nome}!* 🥳\n\nQue Jesus te abençoe muito neste novo ano da sua vida e que São Tarcísio, padroeiro dos coroinhas e acólitos, te ajude a continuar servindo o altar com alegria, amor e dedicação. 🙏❤️\n\nObrigado pelo seu "sim" e por fazer parte da nossa família de coroinhas e acólitos! ✨\n\nFeliz aniversário, ${primeiroNome}! 🎈🎁`;
+  const msg=aplicarVariaveisTexto(state.textos.aniversario,{nome,primeiroNome});
   const shareData={title:`Aniversário de ${nome}`,text:msg};
   if(m.foto&&navigator.canShare){
     try{
@@ -1488,6 +1512,11 @@ window.verHistorico=verHistorico;
 
 /* ---- ADMIN ---- */
 function renderAdmin(){
+  const textoEscalaEl=document.getElementById('adminTextoEscala');
+  const textoAnivEl=document.getElementById('adminTextoAniversario');
+  if(textoEscalaEl)textoEscalaEl.value=state.textos.escala||DEFAULT_TEXTOS.escala;
+  if(textoAnivEl)textoAnivEl.value=state.textos.aniversario||DEFAULT_TEXTOS.aniversario;
+
   const membros=[...state.members].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
   const membrosList=document.getElementById('adminMembersList');
   membrosList.innerHTML=membros.length?membros.map(m=>`
@@ -1514,6 +1543,21 @@ function renderAdmin(){
   }).join(''):'<div class="empty-state" style="padding:24px 12px;"><i class="ri-calendar-close-line"></i><p>Nenhuma escala salva</p></div>';
 }
 window.renderAdmin=renderAdmin;
+
+async function saveAdminTexts(){
+  const textos={
+    escala:document.getElementById('adminTextoEscala').value.trim()||DEFAULT_TEXTOS.escala,
+    aniversario:document.getElementById('adminTextoAniversario').value.trim()||DEFAULT_TEXTOS.aniversario
+  };
+  try{
+    await saveTextosDB(textos);
+    state.textos={...DEFAULT_TEXTOS,...textos};
+    toast('Textos salvos.');
+  }catch(e){
+    alert(mensagemErroFirebase(e));
+  }
+}
+window.saveAdminTexts=saveAdminTexts;
 
 function toggleAdminChecks(className){
   const checks=Array.from(document.querySelectorAll('.'+className));
@@ -1816,7 +1860,7 @@ let cartazImagemURL=null;
 let cartazImagemBlob=null;
 
 function textoCompartilhamentoCartaz(){
-  return 'Olá, pessoal, tudo bem? 😊\n\nSegue a escala atualizada desta semana.\n\nPor favor, confiram com atenção o dia, horário e função de cada um. Em caso de qualquer dificuldade ou necessidade de troca, avisem com antecedência.\n\nMuito obrigada pela disponibilidade e pelo carinho no serviço ao altar. 🙏';
+  return state.textos.escala||DEFAULT_TEXTOS.escala;
 }
 
 function escapeHTML(v){
