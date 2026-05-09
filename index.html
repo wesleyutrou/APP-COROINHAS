@@ -881,10 +881,10 @@ function closeAnivModal(){document.getElementById('anivModal').classList.remove(
 window.openAnivModal=openAnivModal;
 window.closeAnivModal=closeAnivModal;
 
-async function fotoDataUrlParaArquivo(dataUrl,nome){
+async function fotoDataUrlParaArquivo(dataUrl,nome,tipoOverride=null){
   const res=await fetch(dataUrl);
   const blob=await res.blob();
-  return new File([blob],nome,{type:blob.type||'image/jpeg'});
+  return new File([blob],nome,{type:tipoOverride||blob.type||'image/jpeg'});
 }
 
 async function copiarTexto(texto){
@@ -904,8 +904,10 @@ async function enviarAniversario(){
   const shareData={title:`Aniversário de ${nome}`,text:msg};
   if(m.foto&&navigator.canShare){
     try{
-      const arquivo=await fotoDataUrlParaArquivo(m.foto,`aniversario-${primeiroNome}.jpg`);
-      if(navigator.canShare({files:[arquivo],text:msg}))shareData.files=[arquivo];
+      const arquivoDoc=await fotoDataUrlParaArquivo(m.foto,`aniversario-${primeiroNome}.jpg`,'application/octet-stream');
+      const arquivoImg=await fotoDataUrlParaArquivo(m.foto,`aniversario-${primeiroNome}.jpg`);
+      if(navigator.canShare({files:[arquivoDoc],text:msg}))shareData.files=[arquivoDoc];
+      else if(navigator.canShare({files:[arquivoImg],text:msg}))shareData.files=[arquivoImg];
     }catch(e){console.warn('Nao foi possivel preparar a foto para compartilhar:',e);}
   }
   if(navigator.share){
@@ -991,7 +993,7 @@ function compactarAvatar(file){
     img.onload=()=>{
       try{
         const canvas=document.createElement('canvas');
-        const tamanho=320;
+        const tamanho=720;
         const lado=Math.min(img.width,img.height);
         const sx=(img.width-lado)/2;
         const sy=(img.height-lado)/2;
@@ -1000,10 +1002,10 @@ function compactarAvatar(file){
         ctx.fillStyle='#FFFFFF';
         ctx.fillRect(0,0,tamanho,tamanho);
         ctx.drawImage(img,sx,sy,lado,lado,0,0,tamanho,tamanho);
-        let qualidade=0.82;
+        let qualidade=0.92;
         let data=canvas.toDataURL('image/jpeg',qualidade);
-        while(data.length>180000&&qualidade>0.45){
-          qualidade-=0.08;
+        while(data.length>650000&&qualidade>0.72){
+          qualidade-=0.05;
           data=canvas.toDataURL('image/jpeg',qualidade);
         }
         URL.revokeObjectURL(url);
@@ -1026,8 +1028,8 @@ async function previewAvatar(input){
     const data=await compactarAvatar(file);
     state.editAvatar=data;
     prev.innerHTML=`<img src="${data}" alt="">`;
-    if(data.length>180000)toast('Foto otimizada, mas ainda ficou um pouco grande.');
-    else toast('Foto otimizada para o cadastro.');
+    if(data.length>650000)toast('Foto otimizada, mas ainda ficou um pouco grande.');
+    else toast('Foto salva em melhor qualidade.');
   }catch(e){
     console.error(e);
     state.editAvatar=null;
@@ -1813,6 +1815,10 @@ window.enviarWhatsApp=enviarWhatsApp;
 let cartazImagemURL=null;
 let cartazImagemBlob=null;
 
+function textoCompartilhamentoCartaz(){
+  return 'Olá, pessoal, tudo bem? 😊\n\nSegue a escala atualizada desta semana.\n\nPor favor, confiram com atenção o dia, horário e função de cada um. Em caso de qualquer dificuldade ou necessidade de troca, avisem com antecedência.\n\nMuito obrigada pela disponibilidade e pelo carinho no serviço ao altar. 🙏';
+}
+
 function escapeHTML(v){
   return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
@@ -1981,10 +1987,17 @@ window.fecharPreviewImagem=fecharPreviewImagem;
 
 async function compartilharImagemCartaz(){
   if(!cartazImagemBlob){toast('Gere a imagem primeiro.');return;}
+  const texto=textoCompartilhamentoCartaz();
   try{
+    const docFile=new File([cartazImagemBlob],'escala-pastoral-alta-qualidade.png',{type:'application/octet-stream'});
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[docFile],text:texto})){
+      await navigator.share({title:'Escala Pastoral',text:texto,files:[docFile]});
+      toast('Imagem compartilhada em alta qualidade!');
+      return;
+    }
     const file=new File([cartazImagemBlob],'escala-pastoral-alta-qualidade.png',{type:'image/png'});
-    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-      await navigator.share({title:'Escala Pastoral',files:[file]});
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file],text:texto})){
+      await navigator.share({title:'Escala Pastoral',text:texto,files:[file]});
       toast('Imagem compartilhada!');
       return;
     }
@@ -1992,8 +2005,9 @@ async function compartilharImagemCartaz(){
     if(e?.name==='AbortError')return;
     console.warn('Compartilhamento de imagem indisponível:',e);
   }
+  await copiarTexto(texto);
   baixarImagemCartaz();
-  toast('Imagem baixada! Envie no grupo do WhatsApp.');
+  toast('Texto copiado e imagem baixada. Envie como documento no WhatsApp.');
 }
 window.compartilharImagemCartaz=compartilharImagemCartaz;
 
