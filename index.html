@@ -1566,8 +1566,16 @@ function exportarPDF(){
       </div>
     </div>
   </div>`;
-  toast('Preparando PDF...');
-  setTimeout(()=>window.print(),600);
+  toast('Abrindo impressão...');
+  if(typeof window.print!=='function'){
+    alert('Seu navegador não abriu a impressão. Tente pelo menu do navegador: Compartilhar > Imprimir ou Salvar como PDF.');
+    return;
+  }
+  const tituloAnterior=document.title;
+  document.title=`Escala ${MESES[mes]} ${ano} - Paróquia Santa Maria`;
+  document.body.offsetHeight;
+  window.print();
+  setTimeout(()=>{document.title=tituloAnterior;},1000);
 }
 window.exportarPDF=exportarPDF;
 
