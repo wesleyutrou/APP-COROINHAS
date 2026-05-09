@@ -420,14 +420,34 @@ body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min
       <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:#FFF0F0;border:1px solid #FFAAAA;display:inline-block;"></span>Bloqueado</span>
       <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:#FFFBF0;border:1px solid var(--gold);display:inline-block;"></span>Observação</span>
     </div>
+    <div class="card">
+      <div class="card-title"><i class="ri-user-forbid-line"></i> Indisponibilidades deste mês</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Use quando alguém tiver uma exceção somente neste mês, sem alterar o cadastro fixo.</div>
+      <div class="form-group">
+        <label class="form-label">Membro</label>
+        <select class="form-select" id="excecaoMembro"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Não pode neste mês</label>
+        <select class="form-select" id="excecaoRestricao">
+          <option value="quinta">Quintas-feiras</option>
+          <option value="sexta">Sextas-feiras</option>
+          <option value="sabado">Sábados</option>
+          <option value="domingo9">Domingos 9h</option>
+          <option value="domingo19">Domingos 19h</option>
+        </select>
+      </div>
+      <button class="btn btn-outline btn-sm btn-block" onclick="addExcecaoMes()"><i class="ri-add-line"></i> Adicionar exceção</button>
+      <div id="excecoesMesList" style="margin-top:10px;"></div>
+    </div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-outline btn-sm" onclick="geradorStep1()"><i class="ri-arrow-left-line"></i> Voltar</button>
       <button class="btn btn-primary" style="flex:1;" onclick="geradorStep3()">Próximo <i class="ri-arrow-right-line"></i></button>
     </div>
   </div>
   <div id="gs3" style="display:none;">
-    <div class="step-label">Passo 3 · Quintas com adoração</div>
-    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Toque nas quintas que terão Adoração ao Santíssimo</div>
+    <div class="step-label">Passo 3 · Missas com adoração</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Toque nas quintas e na primeira sexta-feira quando terão Adoração ao Santíssimo.</div>
     <div id="configQuintas" style="margin-bottom:16px;"></div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-outline btn-sm" onclick="geradorStep2()"><i class="ri-arrow-left-line"></i> Voltar</button>
@@ -493,7 +513,7 @@ body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min
       <textarea class="form-textarea" id="adminTextoEscala" style="min-height:120px;"></textarea>
     </div>
     <div class="form-group">
-      <label class="form-label">Texto de aniversário <span style="font-weight:400;text-transform:none;letter-spacing:0;">use {nome} e {primeiroNome}</span></label>
+      <label class="form-label">Texto do meio da mensagem de aniversário <span style="font-weight:400;text-transform:none;letter-spacing:0;">use {nome} e {primeiroNome}</span></label>
       <textarea class="form-textarea" id="adminTextoAniversario" style="min-height:160px;"></textarea>
     </div>
   </div>
@@ -552,7 +572,8 @@ body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min
         <label class="dia-check"><input type="checkbox" value="quinta"> Quinta-feira</label>
         <label class="dia-check"><input type="checkbox" value="sexta"> Sexta-feira</label>
         <label class="dia-check"><input type="checkbox" value="sabado"> Sábado</label>
-        <label class="dia-check"><input type="checkbox" value="domingo"> Domingo</label>
+        <label class="dia-check"><input type="checkbox" value="domingo9"> Domingo 9h</label>
+        <label class="dia-check"><input type="checkbox" value="domingo19"> Domingo 19h</label>
       </div>
     </div>
     <div class="form-group"><label class="form-label">Observações</label><input class="form-input" id="mPreferencias" placeholder="Ex: iniciante, prefere credência..."></div>
@@ -691,7 +712,7 @@ const DIAS_PT=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']
 const DIAS_ABREV=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 const DEFAULT_TEXTOS={
   escala:'Olá, pessoal, tudo bem? 😊\n\nSegue a escala atualizada desta semana.\n\nPor favor, confiram com atenção o dia, horário e função de cada um. Em caso de qualquer dificuldade ou necessidade de troca, avisem com antecedência.\n\nMuito obrigada pela disponibilidade e pelo carinho no serviço ao altar. 🙏',
-  aniversario:'🎉 Hoje temos um aniversariante no grupo! 🎂✨\n\n*Parabéns, {nome}!* 🥳\n\nQue Jesus te abençoe muito neste novo ano da sua vida e que São Tarcísio, padroeiro dos coroinhas e acólitos, te ajude a continuar servindo o altar com alegria, amor e dedicação. 🙏❤️\n\nObrigado pelo seu "sim" e por fazer parte da nossa família de coroinhas e acólitos! ✨\n\nFeliz aniversário, {primeiroNome}! 🎈🎁'
+  aniversarioMeio:'Que Jesus te abençoe muito neste novo ano da sua vida e que São Tarcísio, padroeiro dos coroinhas e acólitos, te ajude a continuar servindo o altar com alegria, amor e dedicação. 🙏❤️\n\nObrigado pelo seu "sim" e por fazer parte da nossa família de coroinhas e acólitos! ✨'
 };
 
 let state={
@@ -699,6 +720,7 @@ let state={
   currentFilter:'todos',
   escalaMes:new Date().getMonth(),escalaAno:new Date().getFullYear(),
   gerador:{mes:new Date().getMonth(),ano:new Date().getFullYear(),adoracoes:[]},
+  excecoesMes:[],
   swapContext:null,editAvatar:null,calDiaContext:null,
   showAllCats:false,calActiveTab:'obs',
   anivContext:null,funcoesManuaisTemp:[],
@@ -709,6 +731,12 @@ function toast(msg){const t=document.getElementById('toast');document.getElement
 
 function aplicarVariaveisTexto(texto,vars){
   return String(texto||'').replace(/\{nome\}/g,vars.nome||'').replace(/\{primeiroNome\}/g,vars.primeiroNome||'');
+}
+
+function montarMensagemAniversario(nome){
+  const primeiroNome=nome.split(' ')[0];
+  const meio=aplicarVariaveisTexto(state.textos.aniversarioMeio||DEFAULT_TEXTOS.aniversarioMeio,{nome,primeiroNome});
+  return `🎉 Hoje temos um aniversariante no grupo! 🎂✨\n\n*Parabéns, ${nome}!* 🥳\n\n${meio}\n\nFeliz aniversário, ${primeiroNome}! 🎈🎁`;
 }
 
 function parseNascimento(valor){
@@ -896,7 +924,7 @@ function openAnivModal(id){
     </div>
     <div style="background:var(--cream);border-radius:10px;padding:14px;font-size:13px;line-height:1.8;color:var(--text-muted);">
       <div style="font-weight:700;color:var(--text);margin-bottom:6px;">Prévia da mensagem:</div>
-      ${aplicarVariaveisTexto(state.textos.aniversario,{nome:m.nome,primeiroNome:m.nome.split(' ')[0]}).replace(/\n/g,'<br>')}
+      ${montarMensagemAniversario(m.nome).replace(/\n/g,'<br>')}
     </div>
     <div style="font-size:12px;color:var(--text-muted);margin-top:10px;text-align:center;">No celular, o app tentará compartilhar também a foto do cadastro.</div>`;
   document.getElementById('anivModal').classList.add('open');
@@ -924,7 +952,11 @@ async function copiarTexto(texto){
 async function enviarAniversario(){
   const m=state.anivContext;if(!m)return;
   const nome=m.nome;const primeiroNome=nome.split(' ')[0];
-  const msg=aplicarVariaveisTexto(state.textos.aniversario,{nome,primeiroNome});
+  const nasc=parseNascimento(m.nascimento);
+  const hoje=new Date();
+  const diff=nasc?Math.round((new Date(hoje.getFullYear(),nasc.mes-1,nasc.dia)-hoje)/(1000*60*60*24)):0;
+  if(diff!==0&&!confirm(`Hoje não é aniversário de ${nome}. O aniversário será ${diff>0?'em '+diff+' dia(s)':'foi ontem'}.\n\nDeseja enviar mesmo assim?`))return;
+  const msg=montarMensagemAniversario(nome);
   const shareData={title:`Aniversário de ${nome}`,text:msg};
   if(m.foto&&navigator.canShare){
     try{
@@ -956,6 +988,9 @@ window.enviarAniversario=enviarAniversario;
 function getInitials(nome){return nome.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();}
 function catLabel(c){return c==='coroinha'?'Coroinha':c==='acolito'?'Acólito':'Cerimoniário';}
 function catBadge(c){return c==='coroinha'?'badge-coroinha':c==='acolito'?'badge-acolito':'badge-ceremonario';}
+function restricaoLabel(r){
+  return {quinta:'Quintas-feiras',sexta:'Sextas-feiras',sabado:'Sábados',domingo:'Domingos',domingo9:'Domingos 9h',domingo19:'Domingos 19h'}[r]||r;
+}
 
 function setFilter(f){
   state.currentFilter=f;
@@ -1005,7 +1040,10 @@ function openMemberModal(id){
   if(member?.foto){prev.innerHTML=`<img src="${member.foto}" alt="">`;state.editAvatar=member.foto;}
   else{prev.innerHTML=`<i class="ri-user-line" style="font-size:32px;"></i>`;}
   document.getElementById('avatarInput').value='';
-  document.querySelectorAll('#diasRestricao input[type=checkbox]').forEach(cb=>{cb.checked=member?.restricoes?.includes(cb.value)||false;});
+  document.querySelectorAll('#diasRestricao input[type=checkbox]').forEach(cb=>{
+    const restr=member?.restricoes||[];
+    cb.checked=restr.includes(cb.value)||(restr.includes('domingo')&&(cb.value==='domingo9'||cb.value==='domingo19'));
+  });
   document.getElementById('btnExcluir').style.display=id?'':'none';
 }
 window.openMemberModal=openMemberModal;
@@ -1128,11 +1166,14 @@ window.geradorStep1=geradorStep1;
 function geradorStep2(){
   state.gerador.mes=parseInt(document.getElementById('gerador-mes').value);
   state.gerador.ano=parseInt(document.getElementById('gerador-ano').value);
+  const obsKey=`${state.gerador.ano}-${state.gerador.mes}`;
+  state.excecoesMes=JSON.parse(JSON.stringify((state.obsCalendario[obsKey]||{})._excecoesMes||[]));
   document.getElementById('gs1').style.display='none';document.getElementById('gs2').style.display='';
   document.getElementById('gs3').style.display='none';document.getElementById('gs4').style.display='none';
   document.getElementById('sdot1').className='step-dot done';document.getElementById('sdot2').className='step-dot active';
   document.getElementById('sdot3').className='step-dot';document.getElementById('sdot4').className='step-dot';
   renderCalendario();
+  renderExcecoesMes();
 }
 window.geradorStep2=geradorStep2;
 
@@ -1166,6 +1207,53 @@ function renderCalendario(){
   document.getElementById('calGrid').innerHTML=cells;
 }
 window.renderCalendario=renderCalendario;
+
+function renderExcecoesMes(){
+  const select=document.getElementById('excecaoMembro');
+  if(select){
+    const membros=[...state.members].filter(m=>m.situacao!=='inativo').sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+    select.innerHTML=membros.map(m=>`<option value="${m.id}">${m.nome} · ${catLabel(m.categoria)}</option>`).join('');
+  }
+  const list=document.getElementById('excecoesMesList');
+  if(!list)return;
+  list.innerHTML=state.excecoesMes.length?state.excecoesMes.map((e,i)=>{
+    const m=state.members.find(x=>x.id===e.membroId);
+    return`<div class="funcao-extra-item">
+      <div class="funcao-extra-nome">${m?.nome||'Membro removido'}</div>
+      <div class="funcao-extra-membros">${restricaoLabel(e.restricao)}</div>
+      <button onclick="removeExcecaoMes(${i})" style="background:none;border:none;color:var(--danger);font-size:16px;"><i class="ri-delete-bin-line"></i></button>
+    </div>`;
+  }).join(''):'<div style="font-size:13px;color:var(--text-muted);padding:8px 0;">Nenhuma exceção para este mês.</div>';
+}
+window.renderExcecoesMes=renderExcecoesMes;
+
+async function persistirExcecoesMes(){
+  const obsKey=`${state.gerador.ano}-${state.gerador.mes}`;
+  if(!state.obsCalendario[obsKey])state.obsCalendario[obsKey]={};
+  if(state.excecoesMes.length)state.obsCalendario[obsKey]._excecoesMes=state.excecoesMes;
+  else delete state.obsCalendario[obsKey]._excecoesMes;
+  await saveObsDB(obsKey,state.obsCalendario[obsKey]);
+}
+
+async function addExcecaoMes(){
+  const membroId=document.getElementById('excecaoMembro').value;
+  const restricao=document.getElementById('excecaoRestricao').value;
+  if(!membroId)return;
+  if(!state.excecoesMes.some(e=>e.membroId===membroId&&e.restricao===restricao)){
+    state.excecoesMes.push({membroId,restricao});
+    await persistirExcecoesMes();
+    renderExcecoesMes();
+    toast('Exceção adicionada.');
+  }
+}
+window.addExcecaoMes=addExcecaoMes;
+
+async function removeExcecaoMes(i){
+  state.excecoesMes.splice(i,1);
+  await persistirExcecoesMes();
+  renderExcecoesMes();
+}
+window.removeExcecaoMes=removeExcecaoMes;
 
 function switchCalTab(tab){
   state.calActiveTab=tab;
@@ -1254,16 +1342,16 @@ async function saveCalDia(){
 window.saveCalDia=saveCalDia;
 
 function geradorStep3(){
-  const quintas=getMissasDoMes(state.gerador.mes,state.gerador.ano).filter(m=>m.diasemana===4);
+  const missasAdoracao=getMissasDoMes(state.gerador.mes,state.gerador.ano).filter((m,idx,arr)=>m.diasemana===4||(m.diasemana===5&&arr.filter(x=>x.diasemana===5).map(x=>x.dia).sort((a,b)=>a-b)[0]===m.dia));
   const obsKey=`${state.gerador.ano}-${state.gerador.mes}`;
   const obs=state.obsCalendario[obsKey]||{};
-  const livres=quintas.filter(m=>!(obs[m.dia]?.bloqueado));
+  const livres=missasAdoracao.filter(m=>!(obs[m.dia]?.bloqueado));
   document.getElementById('configQuintas').innerHTML=livres.length?livres.map(m=>`
     <div class="quinta-item ${state.gerador.adoracoes.includes(m.dia)?'com-adoracao':''}" id="qitem-${m.dia}" onclick="toggleAdoracao(${m.dia})">
       <input type="checkbox" id="ador-${m.dia}" value="${m.dia}" ${state.gerador.adoracoes.includes(m.dia)?'checked':''} onclick="event.stopPropagation();toggleAdoracao(${m.dia})">
-      <div><div class="quinta-label">Quinta-feira, ${m.dia}/${state.gerador.mes+1}</div>
+      <div><div class="quinta-label">${m.diasemana===5?'Primeira sexta-feira':'Quinta-feira'}, ${m.dia}/${state.gerador.mes+1}</div>
       <div class="quinta-sub" id="qsub-${m.dia}">19h${state.gerador.adoracoes.includes(m.dia)?' · Com Adoração':''}</div></div>
-    </div>`).join(''):'<div style="color:var(--text-muted);font-size:14px;">Nenhuma quinta disponível.</div>';
+    </div>`).join(''):'<div style="color:var(--text-muted);font-size:14px;">Nenhuma missa disponível para adoração.</div>';
   document.getElementById('gs1').style.display='none';document.getElementById('gs2').style.display='none';
   document.getElementById('gs3').style.display='';document.getElementById('gs4').style.display='none';
   document.getElementById('sdot1').className='step-dot done';document.getElementById('sdot2').className='step-dot done';
@@ -1289,6 +1377,7 @@ function geradorStep4(){
   const c={quinta:0,sexta:0,sabado:0,domingo:0};
   missas.forEach(m=>{if(m.diasemana===4)c.quinta++;else if(m.diasemana===5)c.sexta++;else if(m.diasemana===6)c.sabado++;else if(m.diasemana===0)c.domingo++;});
   const bloqueados=Object.values(obs).filter(v=>v.bloqueado).length;
+  const excecoes=(obs._excecoesMes||state.excecoesMes||[]).length;
   document.getElementById('resumoGerador').innerHTML=`
     <div class="resumo-grid">
       <div class="resumo-item"><div class="resumo-num">${c.quinta}</div><div class="resumo-label">Quintas</div></div>
@@ -1296,7 +1385,7 @@ function geradorStep4(){
       <div class="resumo-item"><div class="resumo-num">${c.sabado}</div><div class="resumo-label">Sábados</div></div>
       <div class="resumo-item"><div class="resumo-num">${c.domingo}</div><div class="resumo-label">Domingos</div></div>
     </div>
-    <div style="font-size:13px;color:var(--text-muted);">Total: <strong style="color:var(--text)">${missas.length} missas</strong> em ${MESES[mes]} ${ano}${bloqueados?` · <span style="color:var(--danger)">${bloqueados} bloqueado(s)</span>`:''}</div>`;
+    <div style="font-size:13px;color:var(--text-muted);">Total: <strong style="color:var(--text)">${missas.length} missas</strong> em ${MESES[mes]} ${ano}${bloqueados?` · <span style="color:var(--danger)">${bloqueados} bloqueado(s)</span>`:''}${excecoes?` · ${excecoes} exceção(ões) do mês`:''}</div>`;
   document.getElementById('gs1').style.display='none';document.getElementById('gs2').style.display='none';
   document.getElementById('gs3').style.display='none';document.getElementById('gs4').style.display='';
   document.getElementById('sdot1').className='step-dot done';document.getElementById('sdot2').className='step-dot done';
@@ -1309,7 +1398,7 @@ function getMissasDoMes(mes,ano,adoracoes=[]){
   for(let d=1;d<=dias;d++){
     const dow=new Date(ano,mes,d).getDay();
     if(dow===4)missas.push({dia:d,diasemana:4,tipo:'Quinta-feira',hora:'19h',adoracao:adoracoes.includes(d)});
-    else if(dow===5)missas.push({dia:d,diasemana:5,tipo:'Sexta-feira',hora:'19h',adoracao:false});
+    else if(dow===5)missas.push({dia:d,diasemana:5,tipo:'Sexta-feira',hora:'19h',adoracao:adoracoes.includes(d)});
     else if(dow===6)missas.push({dia:d,diasemana:6,tipo:'Sábado',hora:'19h',adoracao:false});
     else if(dow===0){
       missas.push({dia:d,diasemana:0,tipo:'Domingo',hora:'9h',adoracao:false});
@@ -1335,15 +1424,39 @@ function getFuncoes(missa){
   return[{nome:'Credência',categoria:'coroinha'},{nome:'Credência 2',categoria:'acolito'},{nome:'Missal',categoria:'ceremonario'}];
 }
 
+function restricoesDaMissa(missa){
+  if(missa.diasemana===4)return ['quinta'];
+  if(missa.diasemana===5)return ['sexta'];
+  if(missa.diasemana===6)return ['sabado'];
+  if(missa.diasemana===0)return [missa.hora==='9h'?'domingo9':'domingo19','domingo'];
+  return [];
+}
+
+function membroDisponivel(membro,missa,excecoesMes=[]){
+  const keys=restricoesDaMissa(missa);
+  const fixas=membro.restricoes||[];
+  if(keys.some(k=>fixas.includes(k)))return false;
+  return !excecoesMes.some(e=>e.membroId===membro.id&&keys.includes(e.restricao));
+}
+
+function categoriasPermitidas(funcao){
+  if(funcao.categoria==='ceremonario')return ['ceremonario'];
+  if(funcao.nome.includes('Turíbulo')||funcao.nome.includes('Naveta'))return ['acolito'];
+  return ['coroinha','acolito'];
+}
+
+function pairKey(a,b){return [a,b].sort().join('|');}
+
 async function gerarEscala(){
   const{mes,ano,adoracoes}=state.gerador;
   const obsKey=`${ano}-${mes}`;
   const obs=state.obsCalendario[obsKey]||{};
+  const excecoesMes=obs._excecoesMes||state.excecoesMes||[];
   const missas=getMissasDoMes(mes,ano,adoracoes).filter(m=>!(obs[m.dia]?.bloqueado));
   const ativos=state.members.filter(m=>m.situacao!=='inativo');
   if(!ativos.length){alert('Cadastre os membros antes de gerar!');return;}
   const cont={};ativos.forEach(m=>{cont[m.id]=0;});
-  const keyDia=['domingo','','','','quinta','sexta','sabado'];
+  const pairCount={};
   const escala=missas.map(missa=>{
     const dadosDia=obs[missa.dia]||{};
     // Se tem funcoes manuais para este dia, usar elas
@@ -1355,13 +1468,23 @@ async function gerarEscala(){
         membrosExtras:f.membros?.slice(1)||[]
       }))};
     }
-    const funcoes=getFuncoes(missa);const dk=keyDia[missa.diasemana];const usados=new Set();
-    return{...missa,funcoes:funcoes.map(f=>{
-      const cands=ativos.filter(m=>m.categoria===f.categoria&&!usados.has(m.id)&&!(m.restricoes||[]).includes(dk)).sort((a,b)=>(cont[a.id]||0)-(cont[b.id]||0));
+    const funcoes=getFuncoes(missa);const usados=new Set();
+    const alocadas=funcoes.map(f=>{
+      const categorias=categoriasPermitidas(f);
+      const cands=ativos.filter(m=>categorias.includes(m.categoria)&&!usados.has(m.id)&&membroDisponivel(m,missa,excecoesMes)).sort((a,b)=>{
+        const score=(m)=>{
+          const pares=[...usados].reduce((s,id)=>s+(pairCount[pairKey(m.id,id)]||0),0);
+          return (cont[m.id]||0)*10+pares*6+(m.categoria!==f.categoria?2:0)+Math.random()*0.01;
+        };
+        return score(a)-score(b);
+      });
       const e=cands[0];
       if(e){usados.add(e.id);cont[e.id]=(cont[e.id]||0)+1;return{...f,membroId:e.id,membroNome:e.nome,membrosExtras:[]};}
       return{...f,membroId:null,membroNome:null,membrosExtras:[]};
-    })};
+    });
+    const ids=[...usados];
+    ids.forEach((id,i)=>ids.slice(i+1).forEach(outro=>{const k=pairKey(id,outro);pairCount[k]=(pairCount[k]||0)+1;}));
+    return{...missa,funcoes:alocadas};
   });
   try{
     const key=`${ano}-${mes}`;
@@ -1444,10 +1567,11 @@ function renderSwapList(){
   const missa=state.escalas[key]?.find(m=>m.dia===dia&&m.hora===hora);if(!missa)return;
   const f=missa.funcoes[fi];
   const search=document.getElementById('swapSearch').value.toLowerCase();
-  const mesmaCat=state.members.filter(m=>m.situacao!=='inativo'&&m.categoria===f.categoria&&(search?m.nome.toLowerCase().includes(search):true)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
-  const outrasCat=state.showAllCats?state.members.filter(m=>m.situacao!=='inativo'&&m.categoria!==f.categoria&&(search?m.nome.toLowerCase().includes(search):true)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')):[];
+  const permitidas=categoriasPermitidas(f);
+  const mesmaCat=state.members.filter(m=>m.situacao!=='inativo'&&permitidas.includes(m.categoria)&&(search?m.nome.toLowerCase().includes(search):true)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  const outrasCat=state.showAllCats?state.members.filter(m=>m.situacao!=='inativo'&&!permitidas.includes(m.categoria)&&(search?m.nome.toLowerCase().includes(search):true)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')):[];
   let html='';
-  if(mesmaCat.length){html+=`<div class="swap-section-label">${catLabel(f.categoria)}s</div>`;html+=mesmaCat.map(m=>swapItem(m,key,dia,hora)).join('');}
+  if(mesmaCat.length){html+=`<div class="swap-section-label">Categorias permitidas</div>`;html+=mesmaCat.map(m=>swapItem(m,key,dia,hora)).join('');}
   if(!state.showAllCats){html+=`<div style="height:8px;"></div><button class="btn btn-outline btn-sm btn-block" onclick="state.showAllCats=true;renderSwapList()"><i class="ri-group-line"></i> Ver todos os membros</button>`;}
   else if(outrasCat.length){html+=`<div class="swap-section-label" style="color:var(--danger);">⚠️ Outras categorias</div>`;html+=outrasCat.map(m=>swapItem(m,key,dia,hora)).join('');}
   if(!mesmaCat.length&&!outrasCat.length)html='<div style="color:var(--text-muted);font-size:14px;padding:10px 0;">Nenhum encontrado.</div>';
@@ -1515,7 +1639,7 @@ function renderAdmin(){
   const textoEscalaEl=document.getElementById('adminTextoEscala');
   const textoAnivEl=document.getElementById('adminTextoAniversario');
   if(textoEscalaEl)textoEscalaEl.value=state.textos.escala||DEFAULT_TEXTOS.escala;
-  if(textoAnivEl)textoAnivEl.value=state.textos.aniversario||DEFAULT_TEXTOS.aniversario;
+  if(textoAnivEl)textoAnivEl.value=state.textos.aniversarioMeio||DEFAULT_TEXTOS.aniversarioMeio;
 
   const membros=[...state.members].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
   const membrosList=document.getElementById('adminMembersList');
@@ -1547,7 +1671,7 @@ window.renderAdmin=renderAdmin;
 async function saveAdminTexts(){
   const textos={
     escala:document.getElementById('adminTextoEscala').value.trim()||DEFAULT_TEXTOS.escala,
-    aniversario:document.getElementById('adminTextoAniversario').value.trim()||DEFAULT_TEXTOS.aniversario
+    aniversarioMeio:document.getElementById('adminTextoAniversario').value.trim()||DEFAULT_TEXTOS.aniversarioMeio
   };
   try{
     await saveTextosDB(textos);
@@ -1813,7 +1937,7 @@ async function enviarWhatsApp(){
     const dadosDia=obs[dia]||{};
 
     if(dadosDia.bloqueado){
-      msg+=`\n❌ *${DIAS_PT[dow]} ${hora}* - NÃO HAVERÁ MISSA.`;
+      msg+=`\n❌ *${DIAS_PT[dow]} ${hora}* - NÃO HAVERÁ MISSA.\n`;
       return;
     }
 
@@ -1846,6 +1970,7 @@ async function enviarWhatsApp(){
       msg+=`\nCredência: ${credencas.filter(c=>c.membroNome).map(c=>c.membroNome).join(', ')}.`;
     }
     extras.forEach(f=>{if(f.membroNome)msg+=`\n${f.nome}: ${f.membroNome}.`;});
+    msg+='\n';
   });
 
   msg+='\n\n⏰ Chegar com 30 minutos de antecedência.\n👱🏼‍♀️ Meninas: cabelo preso.\n📷 Mamães/Papais que estiverem na missa, tirem fotos e mandem no privado.\nObrigada 🥰\nQue o nosso fim de semana seja tranquilo, feliz e cheio de luz 🙏❤️';
