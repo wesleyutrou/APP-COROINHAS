@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pastoral dos Coroinhas e Acólitos</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --blue:#1A3A6B;--blue-mid:#2A5298;--blue-light:#4A7AC8;
+  --blue-pale:#EAF0FB;--blue-pale2:#D6E4F7;
+  --gold:#C9A84C;--gold-light:#F0D98A;
+  --cream:#F7F9FD;--cream-dark:#E4EBF5;
+  --text:#1A2540;--text-muted:#6B7A99;
+  --white:#FFFFFF;--success:#2D6A4F;--danger:#8B1A1A;
+  --radius:14px;--nav-h:68px;
+}
+body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:var(--nav-h);}
+/* HEADER */
+.app-header{background:var(--blue);color:var(--white);display:flex;align-items:center;gap:12px;padding:14px 20px;position:sticky;top:0;z-index:100;border-bottom:3px solid var(--gold);}
+.header-icon{width:38px;height:38px;background:rgba(255,255,255,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--gold-light);flex-shrink:0;}
+.header-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;line-height:1.2;}
+.header-subtitle{font-size:10px;font-weight:300;color:var(--gold-light);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
+/* NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:var(--nav-h);background:var(--white);border-top:1px solid var(--cream-dark);display:flex;z-index:100;box-shadow:0 -4px 20px rgba(26,58,107,0.08);}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--text-muted);font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;border:none;background:none;font-family:'Lato',sans-serif;padding:8px 0;transition:color 0.15s;-webkit-tap-highlight-color:transparent;}
+.nav-btn i{font-size:22px;}
+.nav-btn.active{color:var(--blue);}
+/* PAGES */
+.page{display:none;padding:20px 16px;}
+.page.active{display:block;}
+.page-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--blue);margin-bottom:4px;}
+.page-subtitle{font-size:13px;color:var(--text-muted);margin-bottom:20px;}
+/* CARDS */
+.card{background:var(--white);border-radius:var(--radius);border:1px solid var(--cream-dark);padding:18px;margin-bottom:14px;}
+.card-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--blue);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.card-title i{color:var(--gold);font-size:17px;}
+/* WELCOME */
+.welcome-banner{background:var(--blue);border-radius:var(--radius);padding:20px;margin-bottom:14px;color:var(--white);position:relative;overflow:hidden;}
+.welcome-banner::before{content:'✝';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:72px;color:rgba(255,255,255,0.07);font-family:serif;}
+.welcome-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;margin-bottom:4px;}
+.welcome-sub{font-size:13px;color:var(--gold-light);}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.stat-card{background:var(--white);border:1px solid var(--cream-dark);border-radius:var(--radius);padding:16px;text-align:center;}
+.stat-number{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--blue);line-height:1;}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:1px;}
+/* ANIVERSARIO BANNER */
+.aniv-banner{background:linear-gradient(135deg,#FFD700,#FFA500);border-radius:var(--radius);padding:14px 18px;margin-bottom:14px;color:#4A2800;}
+.aniv-banner-title{font-weight:700;font-size:15px;margin-bottom:4px;}
+.aniv-banner-sub{font-size:13px;opacity:0.85;}
+.aniv-btn{margin-top:10px;background:rgba(0,0,0,0.15);color:#4A2800;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;width:100%;text-align:center;}
+/* MISSA ROW */
+.missa-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--cream-dark);}
+.missa-row:last-child{border-bottom:none;}
+.missa-dia-box{background:var(--blue-pale);border-radius:10px;padding:8px 10px;text-align:center;min-width:48px;flex-shrink:0;}
+.missa-dia-num{font-size:18px;font-weight:700;color:var(--blue);font-family:'Playfair Display',serif;line-height:1;}
+.missa-dia-sem{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-top:2px;}
+.missa-info-tipo{font-weight:700;font-size:14px;}
+.missa-info-hora{font-size:12px;color:var(--text-muted);margin-top:2px;}
+/* BADGES */
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;}
+.badge-coroinha{background:#EAF3DE;color:#3B6D11;}
+.badge-acolito{background:var(--blue-pale);color:var(--blue);}
+.badge-ceremonario{background:#FAEEDA;color:#854F0B;}
+/* BTNS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all 0.15s;font-family:'Lato',sans-serif;-webkit-tap-highlight-color:transparent;}
+.btn-primary{background:var(--blue);color:var(--white);}
+.btn-primary:active{opacity:0.85;}
+.btn-gold{background:var(--gold);color:var(--blue);}
+.btn-gold:active{opacity:0.85;}
+.btn-green{background:#25D366;color:var(--white);}
+.btn-green:active{opacity:0.85;}
+.btn-outline{background:transparent;color:var(--blue);border:1.5px solid var(--blue);}
+.btn-outline:active{background:var(--blue-pale);}
+.btn-danger-outline{background:transparent;color:var(--danger);border:1.5px solid var(--danger);}
+.btn-sm{padding:7px 14px;font-size:12px;border-radius:8px;}
+.btn-block{width:100%;}
+/* MEMBERS */
+.member-item{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--white);border:1px solid var(--cream-dark);border-radius:var(--radius);margin-bottom:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.member-item:active{background:var(--blue-pale);}
+.member-avatar{width:44px;height:44px;border-radius:50%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--blue);flex-shrink:0;overflow:hidden;border:2px solid var(--blue-pale2);}
+.member-avatar img{width:100%;height:100%;object-fit:cover;}
+.member-info{flex:1;min-width:0;}
+.member-name{font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.member-meta{font-size:12px;color:var(--text-muted);margin-top:2px;}
+/* FILTERS */
+.filters{display:flex;gap:7px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.filters::-webkit-scrollbar{display:none;}
+.filter-chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--cream-dark);background:var(--white);cursor:pointer;font-size:13px;color:var(--text-muted);font-family:'Lato',sans-serif;font-weight:700;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.filter-chip.active{border-color:var(--blue);color:var(--blue);background:var(--blue-pale);}
+.search-input{width:100%;padding:11px 16px;border:1.5px solid var(--cream-dark);border-radius:24px;font-size:14px;font-family:'Lato',sans-serif;background:var(--white);color:var(--text);margin-bottom:14px;}
+.search-input:focus{outline:none;border-color:var(--blue-light);}
+/* FORM */
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;}
+.form-input,.form-select{width:100%;padding:12px 14px;border:1.5px solid var(--cream-dark);border-radius:10px;font-size:15px;font-family:'Lato',sans-serif;background:var(--white);color:var(--text);}
+.form-input:focus,.form-select:focus{outline:none;border-color:var(--blue-light);}
+.form-textarea{width:100%;padding:12px 14px;border:1.5px solid var(--cream-dark);border-radius:10px;font-size:14px;font-family:'Lato',sans-serif;background:var(--white);color:var(--text);resize:vertical;min-height:80px;}
+.form-textarea:focus{outline:none;border-color:var(--blue-light);}
+.dias-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.dia-check{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--cream-dark);border-radius:10px;cursor:pointer;font-size:14px;background:var(--white);}
+.dia-check input{accent-color:var(--blue);width:16px;height:16px;}
+/* MODALS */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:flex-end;justify-content:center;}
+.modal-backdrop.open{display:flex;}
+.modal{background:var(--white);border-radius:20px 20px 0 0;padding:24px 20px 36px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;}
+.modal-handle{width:40px;height:4px;background:var(--cream-dark);border-radius:2px;margin:0 auto 20px;}
+.modal-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--blue);margin-bottom:20px;font-weight:600;}
+.modal-actions{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
+/* AVATAR */
+.avatar-upload{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:20px;}
+.avatar-preview{width:80px;height:80px;border-radius:50%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--blue);overflow:hidden;border:3px solid var(--blue-pale2);}
+.avatar-preview img{width:100%;height:100%;object-fit:cover;}
+/* STEPPER */
+.steps-bar{display:flex;gap:6px;margin-bottom:20px;}
+.step-dot{height:4px;flex:1;border-radius:2px;background:var(--cream-dark);transition:background 0.2s;}
+.step-dot.active{background:var(--blue);}
+.step-dot.done{background:var(--blue-light);}
+.step-label{font-size:12px;color:var(--text-muted);margin-bottom:16px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+/* QUINTA */
+.quinta-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--white);border:1.5px solid var(--cream-dark);border-radius:10px;margin-bottom:8px;cursor:pointer;}
+.quinta-item.com-adoracao{border-color:var(--gold);background:#FFFBF0;}
+.quinta-item input{accent-color:var(--gold);width:18px;height:18px;}
+.quinta-label{font-size:14px;font-weight:700;}
+.quinta-sub{font-size:12px;color:var(--text-muted);}
+/* CALENDARIO */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:10px;}
+.cal-header-cell{text-align:center;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;padding:4px 0;}
+.cal-cell{min-height:44px;border-radius:8px;border:1.5px solid var(--cream-dark);background:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:4px 2px;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;}
+.cal-cell:active{background:var(--blue-pale);}
+.cal-cell.vazio{background:transparent;border-color:transparent;cursor:default;}
+.cal-cell.bloqueado{background:#FFF0F0;border-color:#FFAAAA;}
+.cal-cell.tem-obs{background:#FFFBF0;border-color:var(--gold);}
+.cal-cell.tem-missa{border-color:var(--blue-pale2);}
+.cal-cell.sem-missa{background:var(--cream);border-color:var(--cream-dark);opacity:0.4;cursor:default;}
+.cal-num{font-size:13px;font-weight:700;color:var(--text);line-height:1;margin-top:2px;}
+.cal-cell.bloqueado .cal-num{color:var(--danger);}
+.cal-cell.tem-obs .cal-num{color:#6B4C00;}
+.cal-dot{width:5px;height:5px;border-radius:50%;margin-top:2px;}
+.cal-dot-blue{background:var(--blue);}
+.cal-dot-gold{background:var(--gold);}
+.cal-dot-red{background:var(--danger);}
+.cal-liturgia{font-size:7px;line-height:1.05;text-align:center;color:var(--blue);font-weight:700;margin-top:2px;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.cal-cell.solenidade{border-color:var(--gold);background:#FFFBF0;}
+.cal-cell.solenidade .cal-num{color:#854F0B;}
+/* ESCALA */
+.escala-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.escala-nav-btn{width:40px;height:40px;background:var(--white);border:1.5px solid var(--cream-dark);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;color:var(--text-muted);-webkit-tap-highlight-color:transparent;}
+.escala-nav-btn:active{background:var(--blue-pale);}
+.escala-month{font-family:'Playfair Display',serif;font-size:18px;color:var(--blue);font-weight:600;}
+.day-group{margin-bottom:20px;}
+.day-header{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.day-header::after{content:'';flex:1;height:1px;background:var(--cream-dark);}
+.obs-banner{background:#FFFBF0;border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:12px;color:#6B4C00;display:flex;align-items:center;gap:6px;}
+.missa-card{background:var(--white);border:1px solid var(--cream-dark);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;}
+.missa-card-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--blue-pale);border-bottom:1px solid var(--blue-pale2);}
+.missa-card-hdr i{color:var(--blue);font-size:16px;}
+.missa-tipo{font-weight:700;font-size:14px;color:var(--blue);flex:1;}
+.adoracao-tag{font-size:10px;font-weight:700;background:var(--gold-light);color:#6B4C00;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:0.5px;}
+.missa-card-body{padding:12px 14px;}
+.funcao-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--cream-dark);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.funcao-row:last-child{border-bottom:none;}
+.funcao-row:active{opacity:0.6;}
+.funcao-nome-label{font-size:12px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.funcao-membro-name{font-size:14px;font-weight:700;color:var(--text);margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.funcao-membro-name.vazio{color:var(--text-muted);font-weight:400;font-style:italic;font-size:13px;}
+.funcao-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dot-coroinha{background:#639922;}
+.dot-acolito{background:var(--blue-mid);}
+.dot-ceremonario{background:#BA7517;}
+/* RESUMO GERADOR */
+.resumo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.resumo-item{background:var(--blue-pale);border-radius:10px;padding:12px;text-align:center;}
+.resumo-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--blue);}
+.resumo-label{font-size:11px;color:var(--text-muted);margin-top:2px;}
+/* HISTORICO */
+.hist-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border:1px solid var(--cream-dark);border-radius:var(--radius);margin-bottom:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.hist-item:active{background:var(--blue-pale);}
+.hist-icon{width:42px;height:42px;background:var(--blue-pale);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:20px;flex-shrink:0;}
+.hist-mes{font-weight:700;font-size:15px;}
+.hist-detalhe{font-size:12px;color:var(--text-muted);margin-top:2px;}
+/* ADMIN */
+.admin-section{margin-bottom:18px;}
+.admin-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+.admin-list{display:flex;flex-direction:column;gap:8px;}
+.admin-row{display:flex;align-items:center;gap:10px;background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:11px 12px;}
+.admin-row input{width:18px;height:18px;accent-color:var(--danger);flex-shrink:0;}
+.admin-info{flex:1;min-width:0;}
+.admin-title{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.admin-sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
+.admin-danger{background:#FFF5F5;border:1px solid #F0B7B7;color:var(--danger);border-radius:10px;padding:12px;font-size:12px;line-height:1.5;margin-bottom:12px;}
+/* SWAP */
+.swap-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:8px 0 4px;margin-top:4px;}
+.swap-divider{height:1px;background:var(--cream-dark);margin:8px 0;}
+/* ESCALA ACTIONS */
+.escala-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+/* WHATSAPP */
+.wpp-check-item{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--white);border:1.5px solid var(--cream-dark);border-radius:10px;margin-bottom:8px;cursor:pointer;}
+.wpp-check-item.selected{border-color:#25D366;background:#F0FFF4;}
+.wpp-check-item input{accent-color:#25D366;width:18px;height:18px;flex-shrink:0;}
+.wpp-label{font-size:14px;font-weight:700;}
+.wpp-sub{font-size:12px;color:var(--text-muted);}
+/* FUNCAO EXTRA NO CALENDARIO */
+.funcao-extra-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--blue-pale);border-radius:8px;margin-bottom:6px;font-size:13px;}
+.funcao-extra-nome{flex:1;font-weight:700;color:var(--blue);}
+.funcao-extra-membros{font-size:12px;color:var(--text-muted);}
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:rgba(26,58,107,0.85);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--white);}
+.loading-cross{font-size:48px;margin-bottom:16px;animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.loading-text{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:8px;}
+.loading-sub{font-size:13px;color:var(--gold-light);}
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--nav-h) + 12px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--blue);color:var(--white);padding:12px 20px;border-radius:24px;font-size:14px;display:flex;align-items:center;gap:8px;z-index:998;white-space:nowrap;opacity:0;transition:all 0.25s;pointer-events:none;box-shadow:0 4px 20px rgba(26,58,107,0.25);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast i{color:var(--gold-light);font-size:16px;}
+/* EMPTY */
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-muted);}
+.empty-state i{font-size:48px;display:block;margin-bottom:14px;color:var(--blue-pale2);}
+.empty-state p{font-size:15px;margin-bottom:6px;}
+.inativo{opacity:0.45;}
+/* PDF PRINT */
+@media print{
+  @page{size:A4 portrait;margin:4mm;}
+  .app-header,.bottom-nav,.escala-nav,.escala-nav-btn,.escala-actions,.missa-card-body .btn,.missa-card-body>div:last-child{display:none!important;}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  body{padding:0;max-width:100%;background:white;font-size:9px;color:#08245A;}
+  .page{display:block!important;padding:0;}
+  #page-dashboard,#page-membros,#page-gerar,#page-historico,#page-admin{display:none!important;}
+  #page-escala{display:block!important;}
+  #escalaDays{display:none!important;}
+  #pdfView{display:block!important;}
+  .pdf-wrap{padding:0 2mm;background:white;position:relative;overflow:hidden;}
+  .pdf-wrap::before{content:'';position:absolute;left:-22mm;top:-21mm;width:74mm;height:52mm;border-top:7px solid #C99322;border-radius:0 0 70mm 0;transform:rotate(-11deg);z-index:0;}
+  .pdf-header{position:relative;z-index:1;display:grid;grid-template-columns:40mm 1fr 54mm;gap:6mm;align-items:center;margin-bottom:3.5mm;padding:3mm 0 1mm 2mm;color:#08245A;min-height:48mm;}
+  .pdf-saint-img{width:36mm;height:46mm;align-self:end;object-fit:cover;object-position:center 12%;border-radius:18px;border:1.5px solid #F0D98A;box-shadow:0 2px 8px rgba(8,36,90,0.18);}
+  .pdf-brand{font-family:'Lato',sans-serif;font-size:38px;font-weight:900;letter-spacing:2px;text-transform:uppercase;line-height:0.86;color:#08245A;}
+  .pdf-brand-sub{font-size:18px;font-weight:900;letter-spacing:1.7px;text-transform:uppercase;color:#08245A;margin-top:3mm;}
+  .pdf-paroquia{font-size:10px;letter-spacing:1.1px;text-transform:uppercase;color:#B97E10;margin-top:2.6mm;font-weight:900;}
+  .pdf-prayer{font-size:9.5px;letter-spacing:0.5px;text-transform:uppercase;color:#08245A;margin-top:4mm;font-weight:900;}
+  .pdf-side{display:flex;flex-direction:column;align-items:flex-end;gap:7mm;}
+  .pdf-mes{background:#08245A;color:white;border-radius:8px;padding:4.2mm 6mm;font-size:15px;font-weight:900;white-space:nowrap;text-transform:uppercase;box-shadow:0 2px 6px rgba(8,36,90,0.22);}
+  .pdf-parish-mark{display:grid;grid-template-columns:12mm 1fr;gap:2mm;align-items:center;color:#08245A;font-size:10px;font-weight:900;text-transform:uppercase;line-height:1.15;}
+  .pdf-parish-icon{font-size:17px;color:#08245A;text-align:center;}
+  .pdf-semanas{display:flex;flex-direction:column;gap:3.5mm;position:relative;z-index:1;}
+  .pdf-semana{border:1px solid #D7E2F3;border-radius:9px;overflow:visible;break-inside:avoid;background:rgba(255,255,255,0.97);box-shadow:0 1px 6px rgba(8,36,90,0.08);padding:5.2mm 2.5mm 2.5mm;position:relative;}
+  .pdf-semana-header{position:absolute;top:-3.3mm;left:14mm;background:#08245A;color:white;padding:2.1mm 8mm 2.1mm 8mm;border-radius:6px;font-size:9.2px;font-weight:900;text-transform:uppercase;letter-spacing:0.2px;box-shadow:0 1px 4px rgba(8,36,90,0.22);min-width:95mm;}
+  .pdf-week-icon{position:absolute;top:-5mm;left:3.2mm;width:11mm;height:11mm;border-radius:50%;background:#C99322;color:white;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.12);font-size:15px;z-index:2;}
+  .pdf-table{width:100%;border-collapse:collapse;table-layout:fixed;}
+  .pdf-table th{background:linear-gradient(180deg,#F9FBFF,#F1F6FE);color:#08245A;padding:2.8px 5px;text-align:center;font-size:7.8px;font-weight:900;text-transform:uppercase;letter-spacing:0.4px;border:1px solid #D7E2F3;}
+  .pdf-table td{padding:2.2px 5px;border:1px solid #D7E2F3;font-size:8.3px;vertical-align:middle;line-height:1.12;text-align:center;font-weight:800;color:#08245A;}
+  .pdf-table th:nth-child(1),.pdf-table td:nth-child(1){width:16%;}
+  .pdf-table th:nth-child(2),.pdf-table td:nth-child(2){width:20%;}
+  .pdf-table th:nth-child(3),.pdf-table td:nth-child(3){width:10%;}
+  .pdf-table th:nth-child(4),.pdf-table td:nth-child(4){width:54%;}
+  .pdf-obs{font-size:7.5px;color:#854F0B;font-style:italic;margin-top:1px;}
+  .pdf-bloqueado{color:#8B1A1A;font-weight:700;}
+  .pdf-footer{display:grid;grid-template-columns:1fr 58mm;gap:5mm;margin-top:3.5mm;border:1px solid #E3E8F2;border-radius:8px;padding:3mm 6mm;align-items:center;background:#FBFCFF;position:relative;z-index:1;}
+  .pdf-quote{display:grid;grid-template-columns:17mm 1fr;gap:3mm;align-items:center;color:#08245A;}
+  .pdf-prayer-icon{font-size:22px;text-align:center;color:#C99322;}
+  .pdf-quote-text{font-size:10px;font-style:italic;font-weight:700;line-height:1.35;}
+  .pdf-quote-author{font-size:8px;color:#6B7A99;margin-top:1mm;font-style:normal;}
+  .pdf-important{background:#08245A;color:white;border-radius:8px;padding:3mm 5mm;font-size:8px;line-height:1.35;}
+  .pdf-important-title{font-size:10px;font-weight:900;text-transform:uppercase;margin-bottom:1mm;}
+}
+#pdfView{display:none;}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-cross">✝</div>
+  <div class="loading-text">Pastoral dos Coroinhas</div>
+  <div class="loading-sub">Carregando dados...</div>
+</div>
+
+<header class="app-header">
+  <div class="header-icon">✝</div>
+  <div>
+    <div class="header-title">Pastoral dos Coroinhas e Acólitos</div>
+    <div class="header-subtitle">Paróquia Santa Maria</div>
+  </div>
+</header>
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="welcome-banner">
+    <div class="welcome-name">Bem-vinda, Angélica! 🙏</div>
+    <div class="welcome-sub">Pastoral dos Coroinhas e Acólitos</div>
+  </div>
+  <div id="anivBannerContainer"></div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-number" id="stat-total">—</div><div class="stat-label">Membros</div></div>
+    <div class="stat-card"><div class="stat-number" id="stat-coroinhas">—</div><div class="stat-label">Coroinhas</div></div>
+    <div class="stat-card"><div class="stat-number" id="stat-acolitos">—</div><div class="stat-label">Acólitos</div></div>
+    <div class="stat-card"><div class="stat-number" id="stat-ceremonarios">—</div><div class="stat-label">Cerimoniários</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ri-calendar-line"></i> Próximas Missas</div>
+    <div id="proximasMissas"><div style="color:var(--text-muted);font-size:13px;">Carregando...</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ri-information-line"></i> Como usar</div>
+    <div style="font-size:13px;color:var(--text-muted);line-height:1.9;">
+      <div>① Cadastre os membros em <strong style="color:var(--text)">Membros</strong></div>
+      <div>② Gere a escala em <strong style="color:var(--text)">Gerar</strong></div>
+      <div>③ Ajuste em <strong style="color:var(--text)">Escala</strong> tocando em qualquer função</div>
+      <div>④ Exporte PDF ou envie pelo WhatsApp</div>
+    </div>
+  </div>
+</div>
+
+<!-- MEMBROS -->
+<div class="page" id="page-membros">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div class="page-title">Membros</div>
+    <button class="btn btn-primary btn-sm" onclick="openMemberModal()"><i class="ri-user-add-line"></i> Novo</button>
+  </div>
+  <input class="search-input" type="text" id="memberSearch" placeholder="🔍  Buscar membro..." oninput="renderMembers()">
+  <div class="filters">
+    <button class="filter-chip active" onclick="setFilter('todos')" id="filter-todos">Todos</button>
+    <button class="filter-chip" onclick="setFilter('coroinha')" id="filter-coroinha">Coroinhas</button>
+    <button class="filter-chip" onclick="setFilter('acolito')" id="filter-acolito">Acólitos</button>
+    <button class="filter-chip" onclick="setFilter('ceremonario')" id="filter-ceremonario">Cerimoniários</button>
+    <button class="filter-chip" onclick="setFilter('az')" id="filter-az">A→Z</button>
+  </div>
+  <div id="membersGrid"></div>
+</div>
+
+<!-- GERAR -->
+<div class="page" id="page-gerar">
+  <div class="page-title">Gerar Escala</div>
+  <div class="page-subtitle">Configure e gere automaticamente</div>
+  <div class="steps-bar">
+    <div class="step-dot active" id="sdot1"></div>
+    <div class="step-dot" id="sdot2"></div>
+    <div class="step-dot" id="sdot3"></div>
+    <div class="step-dot" id="sdot4"></div>
+  </div>
+  <div id="gs1">
+    <div class="step-label">Passo 1 · Escolha o mês</div>
+    <div class="card">
+      <div class="form-group"><label class="form-label">Mês</label>
+        <select class="form-select" id="gerador-mes">
+          <option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option><option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option><option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option><option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Ano</label>
+        <input class="form-input" type="number" id="gerador-ano" value="2026" min="2024" max="2030">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="geradorStep2()">Próximo <i class="ri-arrow-right-line"></i></button>
+    </div>
+  </div>
+  <div id="gs2" style="display:none;">
+    <div class="step-label">Passo 2 · Calendário do mês</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Toque em qualquer dia com missa para configurá-lo: adicionar observação, bloquear ou montar escala manual.</div>
+    <div class="card" style="padding:12px;">
+      <div class="cal-grid" id="calHeaders"></div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;font-size:11px;color:var(--text-muted);">
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--blue-pale);border:1px solid var(--blue);display:inline-block;"></span>Com missa</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:#FFF0F0;border:1px solid #FFAAAA;display:inline-block;"></span>Bloqueado</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:#FFFBF0;border:1px solid var(--gold);display:inline-block;"></span>Observação</span>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline btn-sm" onclick="geradorStep1()"><i class="ri-arrow-left-line"></i> Voltar</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="geradorStep3()">Próximo <i class="ri-arrow-right-line"></i></button>
+    </div>
+  </div>
+  <div id="gs3" style="display:none;">
+    <div class="step-label">Passo 3 · Quintas com adoração</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Toque nas quintas que terão Adoração ao Santíssimo</div>
+    <div id="configQuintas" style="margin-bottom:16px;"></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline btn-sm" onclick="geradorStep2()"><i class="ri-arrow-left-line"></i> Voltar</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="geradorStep4()">Próximo <i class="ri-arrow-right-line"></i></button>
+    </div>
+  </div>
+  <div id="gs4" style="display:none;">
+    <div class="step-label">Passo 4 · Confirmar e gerar</div>
+    <div id="resumoGerador" style="margin-bottom:16px;"></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline btn-sm" onclick="geradorStep3()"><i class="ri-arrow-left-line"></i> Voltar</button>
+      <button class="btn btn-gold" style="flex:1;" onclick="gerarEscala()"><i class="ri-magic-line"></i> Gerar Escala</button>
+    </div>
+  </div>
+</div>
+
+<!-- ESCALA -->
+<div class="page" id="page-escala">
+  <div class="escala-nav">
+    <button class="escala-nav-btn" onclick="changeEscalaMes(-1)"><i class="ri-arrow-left-s-line"></i></button>
+    <div class="escala-month" id="escalaMonthLabel">—</div>
+    <button class="escala-nav-btn" onclick="changeEscalaMes(1)"><i class="ri-arrow-right-s-line"></i></button>
+  </div>
+  <div class="escala-actions">
+    <button class="btn btn-outline btn-sm" onclick="exportarPDF()"><i class="ri-file-pdf-line"></i> Gerar PDF</button>
+    <button class="btn btn-green btn-sm" onclick="openWppModal()"><i class="ri-whatsapp-line"></i> WhatsApp</button>
+  </div>
+  <div id="escalaDays"></div>
+  <div id="pdfView"></div>
+  <div id="escalaEmpty" style="display:none;" class="empty-state">
+    <i class="ri-calendar-todo-line"></i>
+    <p>Nenhuma escala para este mês</p>
+    <br>
+    <button class="btn btn-primary btn-sm" onclick="navigate('gerar')"><i class="ri-magic-line"></i> Gerar agora</button>
+  </div>
+</div>
+
+<!-- HISTORICO -->
+<div class="page" id="page-historico">
+  <div class="page-title">Histórico</div>
+  <div class="page-subtitle">Escalas de meses anteriores</div>
+  <div id="historicoList"></div>
+  <div id="historicoEmpty" style="display:none;" class="empty-state">
+    <i class="ri-archive-line"></i>
+    <p>Nenhuma escala salva ainda</p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div class="page-title">Administração</div>
+  <div class="page-subtitle">Excluir registros selecionados</div>
+  <div class="admin-danger">
+    Atenção: exclusões são permanentes. Ao excluir uma escala, as observações e configurações daquele mês também serão apagadas.
+  </div>
+  <div class="admin-section">
+    <div class="admin-toolbar">
+      <div class="card-title" style="margin:0;"><i class="ri-user-settings-line"></i> Membros</div>
+      <button class="btn btn-danger-outline btn-sm" onclick="deleteSelectedMembers()"><i class="ri-delete-bin-line"></i> Excluir</button>
+    </div>
+    <button class="btn btn-outline btn-sm btn-block" style="margin-bottom:10px;" onclick="toggleAdminChecks('adminMemberCheck')">Selecionar/limpar membros</button>
+    <div id="adminMembersList" class="admin-list"></div>
+  </div>
+  <div class="admin-section">
+    <div class="admin-toolbar">
+      <div class="card-title" style="margin:0;"><i class="ri-calendar-close-line"></i> Escalas</div>
+      <button class="btn btn-danger-outline btn-sm" onclick="deleteSelectedEscalas()"><i class="ri-delete-bin-line"></i> Excluir</button>
+    </div>
+    <button class="btn btn-outline btn-sm btn-block" style="margin-bottom:10px;" onclick="toggleAdminChecks('adminEscalaCheck')">Selecionar/limpar escalas</button>
+    <div id="adminEscalasList" class="admin-list"></div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="navigate('dashboard')" id="nav-dashboard"><i class="ri-home-5-line"></i>Início</button>
+  <button class="nav-btn" onclick="navigate('membros')" id="nav-membros"><i class="ri-group-line"></i>Membros</button>
+  <button class="nav-btn" onclick="navigate('gerar')" id="nav-gerar"><i class="ri-magic-line"></i>Gerar</button>
+  <button class="nav-btn" onclick="navigate('escala')" id="nav-escala"><i class="ri-calendar-check-line"></i>Escala</button>
+  <button class="nav-btn" onclick="navigate('historico')" id="nav-historico"><i class="ri-archive-line"></i>Histórico</button>
+  <button class="nav-btn" onclick="navigate('admin')" id="nav-admin"><i class="ri-settings-3-line"></i>Admin</button>
+</nav>
+
+<!-- MODAL MEMBRO -->
+<div class="modal-backdrop" id="memberModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="memberModalTitle">Novo Membro</div>
+    <div class="avatar-upload">
+      <div class="avatar-preview" id="avatarPreview"><i class="ri-user-line" style="font-size:32px;"></i></div>
+      <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="previewAvatar(this)">
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('avatarInput').click()"><i class="ri-camera-line"></i> Foto</button>
+    </div>
+    <div class="form-group"><label class="form-label">Nome completo</label><input class="form-input" id="mNome" placeholder="Nome do membro" autocomplete="off"></div>
+    <div class="form-group"><label class="form-label">Data de nascimento</label><input class="form-input" type="date" id="mNascimento"></div>
+    <div class="form-group"><label class="form-label">Categoria</label>
+      <select class="form-select" id="mCategoria">
+        <option value="coroinha">Coroinha</option>
+        <option value="acolito">Acólito</option>
+        <option value="ceremonario">Cerimoniário</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Situação</label>
+      <select class="form-select" id="mSituacao"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Não pode nos dias</label>
+      <div class="dias-grid" id="diasRestricao">
+        <label class="dia-check"><input type="checkbox" value="quinta"> Quinta-feira</label>
+        <label class="dia-check"><input type="checkbox" value="sexta"> Sexta-feira</label>
+        <label class="dia-check"><input type="checkbox" value="sabado"> Sábado</label>
+        <label class="dia-check"><input type="checkbox" value="domingo"> Domingo</label>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Observações</label><input class="form-input" id="mPreferencias" placeholder="Ex: iniciante, prefere credência..."></div>
+    <input type="hidden" id="mId">
+    <div class="modal-actions">
+      <button class="btn btn-primary btn-block" onclick="saveMember()"><i class="ri-save-line"></i> Salvar</button>
+      <button class="btn btn-outline btn-block" onclick="closeMemberModal()">Cancelar</button>
+      <button class="btn btn-block btn-danger-outline" id="btnExcluir" style="display:none;" onclick="deleteMember()"><i class="ri-delete-bin-line"></i> Excluir membro</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SWAP -->
+<div class="modal-backdrop" id="swapModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Trocar membro</div>
+    <div style="font-size:14px;color:var(--text-muted);margin-bottom:14px;" id="swapInfo"></div>
+    <input class="search-input" type="text" placeholder="🔍  Buscar..." id="swapSearch" oninput="renderSwapList()">
+    <div id="swapList" style="max-height:55vh;overflow-y:auto;"></div>
+    <div style="margin-top:14px;"><button class="btn btn-outline btn-block" onclick="closeSwapModal()">Cancelar</button></div>
+  </div>
+</div>
+
+<!-- MODAL DIA CALENDARIO -->
+<div class="modal-backdrop" id="calDiaModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="calDiaTitle">Configurar dia</div>
+    <div style="display:flex;gap:6px;margin-bottom:16px;" id="calDiaTabs">
+      <button class="filter-chip active" id="tab-obs" onclick="switchCalTab('obs')">Observação</button>
+      <button class="filter-chip" id="tab-escala" onclick="switchCalTab('escala')">Escala manual</button>
+    </div>
+    <!-- TAB OBS -->
+    <div id="calTabObs">
+      <div class="form-group">
+        <label class="form-label">Observação para este dia</label>
+        <textarea class="form-textarea" id="calDiaObs" placeholder="Ex: Missa solene, Local: salão paroquial, Horário alterado..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="calDiaBloqueado" style="accent-color:var(--danger);width:16px;height:16px;">
+          <span style="color:var(--danger);">Bloquear este dia (não haverá missa)</span>
+        </label>
+      </div>
+    </div>
+    <!-- TAB ESCALA MANUAL -->
+    <div id="calTabEscala" style="display:none;">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Defina membros extras ou fixos por função para este dia. Isso substitui a alocação automática.</div>
+      <div id="calEscalaFuncoes"></div>
+      <button class="btn btn-outline btn-sm btn-block" style="margin-top:8px;" onclick="addFuncaoManual()"><i class="ri-add-line"></i> Adicionar função</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary btn-block" onclick="saveCalDia()"><i class="ri-save-line"></i> Salvar</button>
+      <button class="btn btn-outline btn-block" onclick="closeCalDiaModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL WHATSAPP -->
+<div class="modal-backdrop" id="wppModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Enviar via WhatsApp</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.5;">Ao abrir no celular, escolha o grupo do WhatsApp na tela de compartilhamento.</div>
+    <input type="hidden" id="wppNumero">
+    <div style="font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Selecione as missas</div>
+    <div id="wppMissasList"></div>
+    <div class="modal-actions">
+      <button class="btn btn-green btn-block" onclick="enviarWhatsApp()"><i class="ri-whatsapp-line"></i> Compartilhar escala</button>
+      <button class="btn btn-outline btn-block" onclick="closeWppModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ANIVERSARIO -->
+<div class="modal-backdrop" id="anivModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🎉 Aniversariante</div>
+    <div id="anivModalContent"></div>
+    <div class="modal-actions">
+      <button class="btn btn-green btn-block" onclick="enviarAniversario()"><i class="ri-whatsapp-line"></i> Enviar parabéns no WhatsApp</button>
+      <button class="btn btn-outline btn-block" onclick="closeAnivModal()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="ri-checkbox-circle-line"></i> <span id="toastMsg"></span></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import{getFirestore,collection,doc,getDocs,setDoc,deleteDoc,getDoc}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig={
+  apiKey:"AIzaSyDFzo9CkFlaJwm68xw2-ittuUtoZQ_gLB4",
+  authDomain:"pastoral-santa-maria.firebaseapp.com",
+  projectId:"pastoral-santa-maria",
+  storageBucket:"pastoral-santa-maria.firebasestorage.app",
+  messagingSenderId:"733239314693",
+  appId:"1:733239314693:web:2af265efb847d802fa8f6c"
+};
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+window.db=db;
+window.fsCollection=collection;
+window.fsDoc=doc;
+window.fsGetDocs=getDocs;
+window.fsSetDoc=setDoc;
+window.fsDeleteDoc=deleteDoc;
+window.fsGetDoc=getDoc;
+
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DIAS_PT=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const DIAS_ABREV=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+let state={
+  members:[],escalas:{},obsCalendario:{},
+  currentFilter:'todos',
+  escalaMes:new Date().getMonth(),escalaAno:new Date().getFullYear(),
+  gerador:{mes:new Date().getMonth(),ano:new Date().getFullYear(),adoracoes:[]},
+  swapContext:null,editAvatar:null,calDiaContext:null,
+  showAllCats:false,calActiveTab:'obs',
+  anivContext:null,funcoesManuaisTemp:[]
+};
+
+function toast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+function parseNascimento(valor){
+  if(!valor||typeof valor!=='string')return null;
+  const partes=valor.split('-').map(Number);
+  if(partes.length!==3||partes.some(Number.isNaN))return null;
+  const [ano,mes,dia]=partes;
+  if(!ano||mes<1||mes>12||dia<1||dia>31)return null;
+  return{ano,mes,dia};
+}
+
+function mensagemErroFirebase(e){
+  console.error(e);
+  const code=e?.code||'';
+  if(code.includes('permission-denied'))return 'Sem permissao para salvar no banco de dados. Verifique as regras do Firebase.';
+  if(code.includes('unavailable'))return 'Nao foi possivel conectar ao Firebase agora. Verifique sua conexao.';
+  if(code.includes('resource-exhausted')||String(e?.message||'').includes('longer than'))return 'O cadastro ainda ficou grande demais para salvar. Tente escolher outra foto ou salvar sem foto.';
+  return `Erro ao salvar: ${e?.message||'verifique sua conexao.'}`;
+}
+
+function dataKey(dt){return `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;}
+function addDias(dt,dias){const r=new Date(dt);r.setDate(r.getDate()+dias);return r;}
+function pascoa(ano){
+  const a=ano%19,b=Math.floor(ano/100),c=ano%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3);
+  const h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451);
+  const mes=Math.floor((h+l-7*m+114)/31)-1,dia=((h+l-7*m+114)%31)+1;
+  return new Date(ano,mes,dia);
+}
+function domingoDoCiclo(mes,ano,dia){
+  const dow=new Date(ano,mes,dia).getDay();
+  if(dow===6)return new Date(ano,mes,dia+1);
+  if(dow===0)return new Date(ano,mes,dia);
+  return new Date(ano,mes,dia-dow);
+}
+function liturgiaDoDia(mes,ano,dia){
+  const dt=new Date(ano,mes,dia);
+  const easter=pascoa(ano);
+  const ash=addDias(easter,-46),palm=addDias(easter,-7),asc=addDias(easter,42),pent=addDias(easter,49),trinity=addDias(easter,56),corpus=addDias(easter,60);
+  const mapa={};
+  mapa[dataKey(ash)]={nome:'Quarta-feira de Cinzas',curto:'Cinzas',solene:true};
+  mapa[dataKey(palm)]={nome:'Domingo de Ramos',curto:'Ramos',solene:true};
+  mapa[dataKey(easter)]={nome:'Domingo da Pascoa',curto:'Pascoa',solene:true};
+  mapa[dataKey(asc)]={nome:'Ascensao do Senhor',curto:'Ascensao',solene:true};
+  mapa[dataKey(pent)]={nome:'Pentecostes',curto:'Pentecostes',solene:true};
+  mapa[dataKey(trinity)]={nome:'Santissima Trindade',curto:'Trindade',solene:true};
+  mapa[dataKey(corpus)]={nome:'Corpus Christi',curto:'Corpus',solene:true};
+  const fixas={
+    [`${ano}-1-1`]:{nome:'Santa Maria, Mae de Deus',curto:'Mae de Deus',solene:true},
+    [`${ano}-12-25`]:{nome:'Natal do Senhor',curto:'Natal',solene:true}
+  };
+  const exata=mapa[dataKey(dt)]||fixas[dataKey(dt)];
+  if(exata)return exata;
+  if(dt.getDay()===0){
+    const diff=Math.round((dt-easter)/(1000*60*60*24));
+    if(diff>0&&diff<42){
+      const n=Math.floor(diff/7)+1;
+      return{nome:`${n}º Domingo da Pascoa`,curto:`${n}º Pascoa`,solene:n>=5};
+    }
+    if(dt>trinity){
+      const batismo=new Date(ano,0,6);
+      while(batismo.getDay()!==0)batismo.setDate(batismo.getDate()+1);
+      const semanasAntesQuaresma=Math.max(0,Math.floor((ash-batismo)/(7*24*60*60*1000)));
+      const semanasDepoisPentecostes=Math.max(0,Math.floor((dt-pent)/(7*24*60*60*1000)));
+      const n=semanasAntesQuaresma+semanasDepoisPentecostes+1;
+      return{nome:`${n}º Domingo do Tempo Comum`,curto:`${n}º T. Comum`,solene:false};
+    }
+  }
+  return null;
+}
+
+/* ---- FIREBASE CRUD ---- */
+async function loadAllData(){
+  try{
+    // Members
+    const mSnap=await getDocs(collection(db,'membros'));
+    state.members=mSnap.docs.map(d=>({id:d.id,...d.data()}));
+    // Escalas
+    const eSnap=await getDocs(collection(db,'escalas'));
+    state.escalas={};
+    eSnap.docs.forEach(d=>{state.escalas[d.id]=d.data().missas||[];});
+    // Obs Calendario
+    const oSnap=await getDocs(collection(db,'observacoes'));
+    state.obsCalendario={};
+    oSnap.docs.forEach(d=>{state.obsCalendario[d.id]=d.data().dias||{};});
+    document.getElementById('loadingOverlay').style.display='none';
+    renderDashboard();
+  }catch(e){
+    console.error(e);
+    document.getElementById('loadingOverlay').innerHTML='<div style="color:#FFD700;font-size:16px;padding:20px;text-align:center;">Erro ao conectar com o banco de dados.<br><br>Verifique sua conexão e recarregue a página.</div>';
+  }
+}
+
+async function saveMemberDB(member){
+  await setDoc(doc(db,'membros',member.id),member);
+}
+async function deleteMemberDB(id){
+  await deleteDoc(doc(db,'membros',id));
+}
+async function saveEscalaDB(key,missas){
+  await setDoc(doc(db,'escalas',key),{missas});
+}
+async function saveObsDB(key,dias){
+  await setDoc(doc(db,'observacoes',key),{dias});
+}
+async function deleteEscalaDB(key){
+  await deleteDoc(doc(db,'escalas',key));
+}
+async function deleteObsDB(key){
+  await deleteDoc(doc(db,'observacoes',key));
+}
+
+/* ---- NAVIGATION ---- */
+function navigate(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.getElementById('nav-'+page)?.classList.add('active');
+  window.scrollTo(0,0);
+  if(page==='membros')renderMembers();
+  if(page==='escala')renderEscala();
+  if(page==='historico')renderHistorico();
+  if(page==='admin')renderAdmin();
+  if(page==='dashboard')renderDashboard();
+  if(page==='gerar'){document.getElementById('gerador-mes').value=new Date().getMonth();document.getElementById('gerador-ano').value=new Date().getFullYear();geradorStep1();}
+}
+window.navigate=navigate;
+
+/* ---- DASHBOARD ---- */
+function renderDashboard(){
+  const m=state.members;
+  const ativos=m.filter(x=>x.situacao!=='inativo');
+  document.getElementById('stat-total').textContent=ativos.length;
+  document.getElementById('stat-coroinhas').textContent=ativos.filter(x=>x.categoria==='coroinha').length;
+  document.getElementById('stat-acolitos').textContent=ativos.filter(x=>x.categoria==='acolito').length;
+  document.getElementById('stat-ceremonarios').textContent=ativos.filter(x=>x.categoria==='ceremonario').length;
+  // Proximas missas
+  const now=new Date();
+  const proximas=getMissasDoMes(now.getMonth(),now.getFullYear()).filter(x=>new Date(now.getFullYear(),now.getMonth(),x.dia)>=now).slice(0,5);
+  const cont=document.getElementById('proximasMissas');
+  cont.innerHTML=proximas.length?proximas.map(x=>`<div class="missa-row"><div class="missa-dia-box"><div class="missa-dia-num">${x.dia}</div><div class="missa-dia-sem">${DIAS_PT[new Date(now.getFullYear(),now.getMonth(),x.dia).getDay()].substring(0,3)}</div></div><div><div class="missa-info-tipo">${x.tipo}</div><div class="missa-info-hora">${x.hora}</div></div></div>`).join(''):'<div style="color:var(--text-muted);font-size:14px;">Nenhuma missa este mês.</div>';
+  // Aniversariantes esta semana
+  checkAniversarios();
+}
+
+function checkAniversarios(){
+  const hoje=new Date();
+  const anivs=state.members.filter(m=>{
+    if(!m.nascimento||m.situacao==='inativo')return false;
+    const nasc=parseNascimento(m.nascimento);if(!nasc)return false;
+    const aniv=new Date(hoje.getFullYear(),nasc.mes-1,nasc.dia);
+    const diff=(aniv-hoje)/(1000*60*60*24);
+    return diff>=-1&&diff<=7;
+  });
+  const cont=document.getElementById('anivBannerContainer');
+  if(!anivs.length){cont.innerHTML='';return;}
+  cont.innerHTML=anivs.map(m=>{
+    const nasc=parseNascimento(m.nascimento);
+    const aniv=new Date(hoje.getFullYear(),nasc.mes-1,nasc.dia);
+    const diff=Math.round((aniv-hoje)/(1000*60*60*24));
+    const quando=diff===0?'Hoje!':diff===1?'Amanhã':diff===-1?'Ontem':`Em ${diff} dias`;
+    return`<div class="aniv-banner" onclick="openAnivModal('${m.id}')">
+      <div class="aniv-banner-title">🎂 Aniversário de ${m.nome}</div>
+      <div class="aniv-banner-sub">${quando} · ${String(nasc.dia).padStart(2,'0')}/${String(nasc.mes).padStart(2,'0')}</div>
+      <button class="aniv-btn"><i class="ri-whatsapp-line"></i> Enviar parabéns no grupo</button>
+    </div>`;
+  }).join('');
+}
+
+function openAnivModal(id){
+  const m=state.members.find(x=>x.id===id);if(!m)return;
+  state.anivContext=m;
+  const nasc=parseNascimento(m.nascimento);if(!nasc)return;
+  document.getElementById('anivModalContent').innerHTML=`
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;margin:0 auto 10px;border:3px solid var(--gold);">
+        ${m.foto?`<img src="${m.foto}" style="width:100%;height:100%;object-fit:cover;">`:`<div style="width:100%;height:100%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--blue);font-family:'Playfair Display',serif;">${getInitials(m.nome)}</div>`}
+      </div>
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--blue);">${m.nome}</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">${String(nasc.dia).padStart(2,'0')}/${String(nasc.mes).padStart(2,'0')} · ${catLabel(m.categoria)}</div>
+    </div>
+    <div style="background:var(--cream);border-radius:10px;padding:14px;font-size:13px;line-height:1.8;color:var(--text-muted);">
+      <div style="font-weight:700;color:var(--text);margin-bottom:6px;">Previa da mensagem:</div>
+      Hoje temos aniversariante!<br><br>
+      Parabens, ${m.nome}!<br><br>
+      Que Nossa Senhora te cubra com seu manto de amor e te conduza sempre pelos caminhos de Jesus.<br>
+      Muitas felicidades, saude e paz.<br><br>
+      Viva ${m.nome.split(' ')[0]}!
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:10px;text-align:center;">No celular, o app tentara compartilhar tambem a foto do cadastro.</div>`;
+  document.getElementById('anivModal').classList.add('open');
+}
+function closeAnivModal(){document.getElementById('anivModal').classList.remove('open');}
+window.openAnivModal=openAnivModal;
+window.closeAnivModal=closeAnivModal;
+
+async function fotoDataUrlParaArquivo(dataUrl,nome){
+  const res=await fetch(dataUrl);
+  const blob=await res.blob();
+  return new File([blob],nome,{type:blob.type||'image/jpeg'});
+}
+
+async function copiarTexto(texto){
+  try{
+    await navigator.clipboard.writeText(texto);
+    return true;
+  }catch(e){
+    console.warn('Nao foi possivel copiar automaticamente:',e);
+    return false;
+  }
+}
+
+async function enviarAniversario(){
+  const m=state.anivContext;if(!m)return;
+  const nome=m.nome;const primeiroNome=nome.split(' ')[0];
+  const msg=`Hoje temos aniversariante!\n\nParabens, ${nome}!\n\nQue Nossa Senhora te cubra com seu manto de amor e te conduza sempre pelos caminhos de Jesus.\nMuitas felicidades, saude e paz.\n\nViva ${primeiroNome}!`;
+  const shareData={title:`Aniversario de ${nome}`,text:msg};
+  if(m.foto&&navigator.canShare){
+    try{
+      const arquivo=await fotoDataUrlParaArquivo(m.foto,`aniversario-${primeiroNome}.jpg`);
+      if(navigator.canShare({files:[arquivo],text:msg}))shareData.files=[arquivo];
+    }catch(e){console.warn('Nao foi possivel preparar a foto para compartilhar:',e);}
+  }
+  if(navigator.share){
+    try{
+      await navigator.share(shareData);
+      closeAnivModal();
+      toast('Escolha o grupo no WhatsApp para enviar.');
+      return;
+    }catch(e){
+      if(e?.name==='AbortError')return;
+      console.warn('Compartilhamento nativo indisponivel:',e);
+    }
+  }
+  await copiarTexto(msg);
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
+  closeAnivModal();
+  toast(m.foto?'Mensagem copiada. Escolha o grupo; se necessario, anexe a foto manualmente.':'Escolha o grupo no WhatsApp.');
+}
+window.enviarAniversario=enviarAniversario;
+
+/* ---- MEMBERS ---- */
+function getInitials(nome){return nome.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();}
+function catLabel(c){return c==='coroinha'?'Coroinha':c==='acolito'?'Acólito':'Cerimoniário';}
+function catBadge(c){return c==='coroinha'?'badge-coroinha':c==='acolito'?'badge-acolito':'badge-ceremonario';}
+
+function setFilter(f){
+  state.currentFilter=f;
+  document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));
+  document.getElementById('filter-'+f)?.classList.add('active');
+  renderMembers();
+}
+window.setFilter=setFilter;
+
+function renderMembers(){
+  const search=document.getElementById('memberSearch')?.value?.toLowerCase()||'';
+  let list=state.members.filter(m=>{
+    const cat=state.currentFilter;
+    if(cat==='az'||cat==='todos')return search?m.nome.toLowerCase().includes(search):true;
+    return m.categoria===cat&&(search?m.nome.toLowerCase().includes(search):true);
+  });
+  if(state.currentFilter==='az'||true){list.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));}
+  const grid=document.getElementById('membersGrid');
+  if(!list.length){grid.innerHTML='<div class="empty-state"><i class="ri-user-search-line"></i><p>Nenhum membro encontrado</p></div>';return;}
+  grid.innerHTML=list.map(m=>{
+    const hoje=new Date();
+    const ehAniv=m.nascimento&&(()=>{const nasc=parseNascimento(m.nascimento);if(!nasc)return false;const aniv=new Date(hoje.getFullYear(),nasc.mes-1,nasc.dia);const diff=(aniv-hoje)/(1000*60*60*24);return diff>=-1&&diff<=1;})();
+    return`<div class="member-item ${m.situacao==='inativo'?'inativo':''}" onclick="openMemberModal('${m.id}')">
+      <div class="member-avatar">${m.foto?`<img src="${m.foto}" alt="">`:(m.nome?getInitials(m.nome):'?')}</div>
+      <div class="member-info">
+        <div class="member-name">${m.nome}${ehAniv?' 🎂':''}</div>
+        <div class="member-meta"><span class="badge ${catBadge(m.categoria)}">${catLabel(m.categoria)}</span>${m.nascimento?` · ${m.nascimento.split('-').slice(1).reverse().join('/')}`:''}</div>
+      </div>
+      <i class="ri-arrow-right-s-line" style="color:var(--text-muted);font-size:18px;"></i>
+    </div>`;
+  }).join('');
+}
+window.renderMembers=renderMembers;
+
+function openMemberModal(id){
+  state.editAvatar=null;
+  document.getElementById('memberModal').classList.add('open');
+  const member=id?state.members.find(m=>m.id===id):null;
+  document.getElementById('memberModalTitle').textContent=member?'Editar Membro':'Novo Membro';
+  document.getElementById('mId').value=id||'';
+  document.getElementById('mNome').value=member?.nome||'';
+  document.getElementById('mNascimento').value=member?.nascimento||'';
+  document.getElementById('mCategoria').value=member?.categoria||'coroinha';
+  document.getElementById('mSituacao').value=member?.situacao||'ativo';
+  document.getElementById('mPreferencias').value=member?.preferencias||'';
+  const prev=document.getElementById('avatarPreview');
+  if(member?.foto){prev.innerHTML=`<img src="${member.foto}" alt="">`;state.editAvatar=member.foto;}
+  else{prev.innerHTML=`<i class="ri-user-line" style="font-size:32px;"></i>`;}
+  document.getElementById('avatarInput').value='';
+  document.querySelectorAll('#diasRestricao input[type=checkbox]').forEach(cb=>{cb.checked=member?.restricoes?.includes(cb.value)||false;});
+  document.getElementById('btnExcluir').style.display=id?'':'none';
+}
+window.openMemberModal=openMemberModal;
+
+function compactarAvatar(file){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      try{
+        const canvas=document.createElement('canvas');
+        const tamanho=320;
+        const lado=Math.min(img.width,img.height);
+        const sx=(img.width-lado)/2;
+        const sy=(img.height-lado)/2;
+        canvas.width=tamanho;canvas.height=tamanho;
+        const ctx=canvas.getContext('2d');
+        ctx.fillStyle='#FFFFFF';
+        ctx.fillRect(0,0,tamanho,tamanho);
+        ctx.drawImage(img,sx,sy,lado,lado,0,0,tamanho,tamanho);
+        let qualidade=0.82;
+        let data=canvas.toDataURL('image/jpeg',qualidade);
+        while(data.length>180000&&qualidade>0.45){
+          qualidade-=0.08;
+          data=canvas.toDataURL('image/jpeg',qualidade);
+        }
+        URL.revokeObjectURL(url);
+        resolve(data);
+      }catch(e){
+        URL.revokeObjectURL(url);
+        reject(e);
+      }
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Nao foi possivel carregar a imagem.'));};
+    img.src=url;
+  });
+}
+
+async function previewAvatar(input){
+  const file=input.files[0];if(!file)return;
+  const prev=document.getElementById('avatarPreview');
+  prev.innerHTML='<i class="ri-loader-4-line" style="font-size:32px;"></i>';
+  try{
+    const data=await compactarAvatar(file);
+    state.editAvatar=data;
+    prev.innerHTML=`<img src="${data}" alt="">`;
+    if(data.length>180000)toast('Foto otimizada, mas ainda ficou um pouco grande.');
+    else toast('Foto otimizada para o cadastro.');
+  }catch(e){
+    console.error(e);
+    state.editAvatar=null;
+    prev.innerHTML='<i class="ri-user-line" style="font-size:32px;"></i>';
+    alert('Nao foi possivel carregar essa foto. Tente outra imagem.');
+  }
+}
+window.previewAvatar=previewAvatar;
+
+function closeMemberModal(){document.getElementById('memberModal').classList.remove('open');}
+window.closeMemberModal=closeMemberModal;
+
+async function saveMember(){
+  const nome=document.getElementById('mNome').value.trim();
+  if(!nome){alert('Digite o nome do membro.');return;}
+  const id=document.getElementById('mId').value;
+  const duplicado=state.members.find(m=>m.nome.toLowerCase()===nome.toLowerCase()&&m.id!==id);
+  if(duplicado){
+    const ok=confirm(`⚠️ Já existe um membro chamado "${duplicado.nome}".\n\nSão pessoas diferentes?\n\nClique OK e diferencie o nome (ex: sobrenome ou apelido).`);
+    if(!ok)return;
+    document.getElementById('mNome').focus();return;
+  }
+  const restricoes=Array.from(document.querySelectorAll('#diasRestricao input:checked')).map(c=>c.value);
+  const data={
+    id:id||Date.now().toString(),nome,
+    nascimento:document.getElementById('mNascimento').value||'',
+    categoria:document.getElementById('mCategoria').value,
+    situacao:document.getElementById('mSituacao').value,
+    preferencias:document.getElementById('mPreferencias').value.trim(),
+    restricoes,foto:state.editAvatar||''
+  };
+  try{
+    await saveMemberDB(data);
+  }catch(e){
+    alert(mensagemErroFirebase(e));
+    return;
+  }
+  if(id){const i=state.members.findIndex(m=>m.id===id);if(i>-1)state.members[i]=data;}
+  else state.members.push(data);
+  closeMemberModal();
+  try{
+    renderMembers();renderDashboard();
+  }catch(e){
+    console.error('Membro salvo, mas houve erro ao atualizar a tela:',e);
+    toast('Membro salvo. Recarregue a pagina para atualizar a tela.');
+    return;
+  }
+  toast(id?'Membro atualizado!':'Membro cadastrado!');
+}
+window.saveMember=saveMember;
+
+async function deleteMember(){
+  const id=document.getElementById('mId').value;
+  const member=state.members.find(m=>m.id===id);if(!member)return;
+  if(!confirm(`Excluir "${member.nome}" permanentemente?`))return;
+  try{
+    await deleteMemberDB(id);
+    state.members=state.members.filter(m=>m.id!==id);
+    closeMemberModal();renderMembers();renderDashboard();toast('Membro excluído.');
+  }catch(e){alert('Erro ao excluir.');}
+}
+window.deleteMember=deleteMember;
+
+/* ---- GERADOR ---- */
+function geradorStep1(){
+  ['gs1','gs2','gs3','gs4'].forEach(id=>{document.getElementById(id).style.display='none';});
+  document.getElementById('gs1').style.display='';
+  ['sdot1','sdot2','sdot3','sdot4'].forEach((id,i)=>{document.getElementById(id).className='step-dot'+(i===0?' active':'');});
+}
+window.geradorStep1=geradorStep1;
+
+function geradorStep2(){
+  state.gerador.mes=parseInt(document.getElementById('gerador-mes').value);
+  state.gerador.ano=parseInt(document.getElementById('gerador-ano').value);
+  document.getElementById('gs1').style.display='none';document.getElementById('gs2').style.display='';
+  document.getElementById('gs3').style.display='none';document.getElementById('gs4').style.display='none';
+  document.getElementById('sdot1').className='step-dot done';document.getElementById('sdot2').className='step-dot active';
+  document.getElementById('sdot3').className='step-dot';document.getElementById('sdot4').className='step-dot';
+  renderCalendario();
+}
+window.geradorStep2=geradorStep2;
+
+function renderCalendario(){
+  const{mes,ano}=state.gerador;
+  const obsKey=`${ano}-${mes}`;
+  const obs=state.obsCalendario[obsKey]||{};
+  const missasDias=new Set(getMissasDoMes(mes,ano).map(m=>m.dia));
+  const primeiroDow=new Date(ano,mes,1).getDay();
+  const totalDias=new Date(ano,mes+1,0).getDate();
+  document.getElementById('calHeaders').innerHTML=DIAS_ABREV.map(d=>`<div class="cal-header-cell">${d}</div>`).join('');
+  let cells='';
+  for(let i=0;i<primeiroDow;i++)cells+=`<div class="cal-cell vazio"></div>`;
+  for(let d=1;d<=totalDias;d++){
+    const temMissa=missasDias.has(d);
+    const lit=liturgiaDoDia(mes,ano,d);
+    const dadosDia=obs[d]||{};
+    const bloqueado=dadosDia.bloqueado;
+    const temObs=dadosDia.obs&&dadosDia.obs.trim();
+    const temEscala=dadosDia.funcoesManuais&&dadosDia.funcoesManuais.length>0;
+    let cls='cal-cell';
+    let dots='';
+    if(lit?.solene)cls+=' solenidade';
+    if(!temMissa)cls+=' sem-missa';
+    else if(bloqueado){cls+=' bloqueado';dots=`<div class="cal-dot cal-dot-red"></div>`;}
+    else if(temObs||temEscala){cls+=' tem-obs';dots=`<div class="cal-dot cal-dot-gold"></div>`;}
+    else cls+=' tem-missa';
+    const onclick=temMissa?`onclick="openCalDia(${d})"`:'' ;
+    cells+=`<div class="${cls}" ${onclick}><span class="cal-num">${d}</span>${lit?`<div class="cal-liturgia">${lit.curto}</div>`:''}${dots}</div>`;
+  }
+  document.getElementById('calGrid').innerHTML=cells;
+}
+window.renderCalendario=renderCalendario;
+
+function switchCalTab(tab){
+  state.calActiveTab=tab;
+  document.getElementById('calTabObs').style.display=tab==='obs'?'':'none';
+  document.getElementById('calTabEscala').style.display=tab==='escala'?'':'none';
+  document.getElementById('tab-obs').className='filter-chip'+(tab==='obs'?' active':'');
+  document.getElementById('tab-escala').className='filter-chip'+(tab==='escala'?' active':'');
+}
+window.switchCalTab=switchCalTab;
+
+function openCalDia(dia){
+  const{mes,ano}=state.gerador;
+  const obsKey=`${ano}-${mes}`;
+  const obs=(state.obsCalendario[obsKey]||{})[dia]||{};
+  const lit=liturgiaDoDia(mes,ano,dia);
+  state.calDiaContext={dia,obsKey};
+  state.funcoesManuaisTemp=JSON.parse(JSON.stringify(obs.funcoesManuais||[]));
+  document.getElementById('calDiaTitle').textContent=`${DIAS_PT[new Date(ano,mes,dia).getDay()]}, ${dia}/${mes+1}/${ano}${lit?' · '+lit.nome:''}`;
+  document.getElementById('calDiaObs').value=obs.obs||'';
+  document.getElementById('calDiaBloqueado').checked=obs.bloqueado||false;
+  renderFuncoesManuais();
+  switchCalTab('obs');
+  document.getElementById('calDiaModal').classList.add('open');
+}
+window.openCalDia=openCalDia;
+
+function renderFuncoesManuais(){
+  const cont=document.getElementById('calEscalaFuncoes');
+  if(!state.funcoesManuaisTemp.length){cont.innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">Nenhuma função manual definida.</div>';return;}
+  cont.innerHTML=state.funcoesManuaisTemp.map((f,i)=>`
+    <div class="funcao-extra-item">
+      <div style="flex:1;">
+        <div class="funcao-extra-nome">${f.nome}</div>
+        <div class="funcao-extra-membros">${f.membros&&f.membros.length?f.membros.join(', '):'Nenhum membro'}</div>
+      </div>
+      <button onclick="editFuncaoManual(${i})" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:16px;"><i class="ri-edit-line"></i></button>
+      <button onclick="removeFuncaoManual(${i})" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:16px;"><i class="ri-delete-bin-line"></i></button>
+    </div>`).join('');
+}
+window.renderFuncoesManuais=renderFuncoesManuais;
+
+function addFuncaoManual(){
+  const nome=prompt('Nome da função:\n(ex: Credência, Vela 1, Turíbulo...)');
+  if(!nome)return;
+  const cat=prompt('Categoria:\n1 - Coroinha\n2 - Acólito\n3 - Cerimoniário');
+  const cats={'1':'coroinha','2':'acolito','3':'ceremonario'};
+  const categoria=cats[cat?.trim()];
+  if(!categoria){alert('Categoria inválida.');return;}
+  const membrosDisp=state.members.filter(m=>m.situacao!=='inativo'&&m.categoria===categoria).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  const lista=membrosDisp.map((m,i)=>`${i+1}. ${m.nome}`).join('\n');
+  const selecao=prompt(`Selecione os membros (números separados por vírgula):\n${lista}`);
+  if(!selecao)return;
+  const indices=selecao.split(',').map(s=>parseInt(s.trim())-1).filter(i=>i>=0&&i<membrosDisp.length);
+  const membros=indices.map(i=>membrosDisp[i].nome);
+  const membroIds=indices.map(i=>membrosDisp[i].id);
+  state.funcoesManuaisTemp.push({nome,categoria,membros,membroIds});
+  renderFuncoesManuais();
+}
+window.addFuncaoManual=addFuncaoManual;
+
+function removeFuncaoManual(i){state.funcoesManuaisTemp.splice(i,1);renderFuncoesManuais();}
+window.removeFuncaoManual=removeFuncaoManual;
+
+function editFuncaoManual(i){
+  removeFuncaoManual(i);addFuncaoManual();
+}
+window.editFuncaoManual=editFuncaoManual;
+
+function closeCalDiaModal(){document.getElementById('calDiaModal').classList.remove('open');}
+window.closeCalDiaModal=closeCalDiaModal;
+
+async function saveCalDia(){
+  const{dia,obsKey}=state.calDiaContext;
+  if(!state.obsCalendario[obsKey])state.obsCalendario[obsKey]={};
+  const obs=document.getElementById('calDiaObs').value.trim();
+  const bloqueado=document.getElementById('calDiaBloqueado').checked;
+  const funcoesManuais=state.funcoesManuaisTemp;
+  if(!obs&&!bloqueado&&!funcoesManuais.length){delete state.obsCalendario[obsKey][dia];}
+  else{state.obsCalendario[obsKey][dia]={obs,bloqueado,funcoesManuais};}
+  try{
+    await saveObsDB(obsKey,state.obsCalendario[obsKey]);
+    closeCalDiaModal();renderCalendario();
+    toast(bloqueado?'Dia bloqueado!':'Configuração salva!');
+  }catch(e){alert('Erro ao salvar.');}
+}
+window.saveCalDia=saveCalDia;
+
+function geradorStep3(){
+  const quintas=getMissasDoMes(state.gerador.mes,state.gerador.ano).filter(m=>m.diasemana===4);
+  const obsKey=`${state.gerador.ano}-${state.gerador.mes}`;
+  const obs=state.obsCalendario[obsKey]||{};
+  const livres=quintas.filter(m=>!(obs[m.dia]?.bloqueado));
+  document.getElementById('configQuintas').innerHTML=livres.length?livres.map(m=>`
+    <div class="quinta-item ${state.gerador.adoracoes.includes(m.dia)?'com-adoracao':''}" id="qitem-${m.dia}" onclick="toggleAdoracao(${m.dia})">
+      <input type="checkbox" id="ador-${m.dia}" value="${m.dia}" ${state.gerador.adoracoes.includes(m.dia)?'checked':''} onclick="event.stopPropagation();toggleAdoracao(${m.dia})">
+      <div><div class="quinta-label">Quinta-feira, ${m.dia}/${state.gerador.mes+1}</div>
+      <div class="quinta-sub" id="qsub-${m.dia}">19h${state.gerador.adoracoes.includes(m.dia)?' · Com Adoração':''}</div></div>
+    </div>`).join(''):'<div style="color:var(--text-muted);font-size:14px;">Nenhuma quinta disponível.</div>';
+  document.getElementById('gs1').style.display='none';document.getElementById('gs2').style.display='none';
+  document.getElementById('gs3').style.display='';document.getElementById('gs4').style.display='none';
+  document.getElementById('sdot1').className='step-dot done';document.getElementById('sdot2').className='step-dot done';
+  document.getElementById('sdot3').className='step-dot active';document.getElementById('sdot4').className='step-dot';
+}
+window.geradorStep3=geradorStep3;
+
+function toggleAdoracao(dia){
+  const cb=document.getElementById('ador-'+dia);if(!cb)return;
+  cb.checked=!cb.checked;
+  const item=document.getElementById('qitem-'+dia);
+  const sub=document.getElementById('qsub-'+dia);
+  if(cb.checked){if(!state.gerador.adoracoes.includes(dia))state.gerador.adoracoes.push(dia);item.classList.add('com-adoracao');sub.textContent='19h · Com Adoração';}
+  else{state.gerador.adoracoes=state.gerador.adoracoes.filter(d=>d!==dia);item.classList.remove('com-adoracao');sub.textContent='19h';}
+}
+window.toggleAdoracao=toggleAdoracao;
+
+function geradorStep4(){
+  const{mes,ano,adoracoes}=state.gerador;
+  const obsKey=`${ano}-${mes}`;
+  const obs=state.obsCalendario[obsKey]||{};
+  const missas=getMissasDoMes(mes,ano,adoracoes).filter(m=>!(obs[m.dia]?.bloqueado));
+  const c={quinta:0,sexta:0,sabado:0,domingo:0};
+  missas.forEach(m=>{if(m.diasemana===4)c.quinta++;else if(m.diasemana===5)c.sexta++;else if(m.diasemana===6)c.sabado++;else if(m.diasemana===0)c.domingo++;});
+  const bloqueados=Object.values(obs).filter(v=>v.bloqueado).length;
+  document.getElementById('resumoGerador').innerHTML=`
+    <div class="resumo-grid">
+      <div class="resumo-item"><div class="resumo-num">${c.quinta}</div><div class="resumo-label">Quintas</div></div>
+      <div class="resumo-item"><div class="resumo-num">${c.sexta}</div><div class="resumo-label">Sextas</div></div>
+      <div class="resumo-item"><div class="resumo-num">${c.sabado}</div><div class="resumo-label">Sábados</div></div>
+      <div class="resumo-item"><div class="resumo-num">${c.domingo}</div><div class="resumo-label">Domingos</div></div>
+    </div>
+    <div style="font-size:13px;color:var(--text-muted);">Total: <strong style="color:var(--text)">${missas.length} missas</strong> em ${MESES[mes]} ${ano}${bloqueados?` · <span style="color:var(--danger)">${bloqueados} bloqueado(s)</span>`:''}</div>`;
+  document.getElementById('gs1').style.display='none';document.getElementById('gs2').style.display='none';
+  document.getElementById('gs3').style.display='none';document.getElementById('gs4').style.display='';
+  document.getElementById('sdot1').className='step-dot done';document.getElementById('sdot2').className='step-dot done';
+  document.getElementById('sdot3').className='step-dot done';document.getElementById('sdot4').className='step-dot active';
+}
+window.geradorStep4=geradorStep4;
+
+function getMissasDoMes(mes,ano,adoracoes=[]){
+  const missas=[];const dias=new Date(ano,mes+1,0).getDate();
+  for(let d=1;d<=dias;d++){
+    const dow=new Date(ano,mes,d).getDay();
+    if(dow===4)missas.push({dia:d,diasemana:4,tipo:'Quinta-feira',hora:'19h',adoracao:adoracoes.includes(d)});
+    else if(dow===5)missas.push({dia:d,diasemana:5,tipo:'Sexta-feira',hora:'19h',adoracao:false});
+    else if(dow===6)missas.push({dia:d,diasemana:6,tipo:'Sábado',hora:'19h',adoracao:false});
+    else if(dow===0){
+      missas.push({dia:d,diasemana:0,tipo:'Domingo',hora:'9h',adoracao:false});
+      missas.push({dia:d,diasemana:0,tipo:'Domingo',hora:'19h',adoracao:false});
+    }
+  }
+  return missas;
+}
+
+function getFuncoes(missa){
+  const{diasemana,adoracao}=missa;
+  if(diasemana===6||diasemana===0)return[
+    {nome:'Vela 1',categoria:'coroinha'},{nome:'Vela 2',categoria:'coroinha'},
+    {nome:'Credência',categoria:'coroinha'},{nome:'Credência 2',categoria:'acolito'},
+    {nome:'Turíbulo',categoria:'acolito'},{nome:'Naveta',categoria:'acolito'},
+    {nome:'Missal',categoria:'ceremonario'},{nome:'Procissão',categoria:'ceremonario'}
+  ];
+  if(diasemana===4&&adoracao)return[
+    {nome:'Vela 1',categoria:'coroinha'},{nome:'Vela 2',categoria:'coroinha'},
+    {nome:'Turíbulo',categoria:'acolito'},{nome:'Naveta',categoria:'acolito'},
+    {nome:'Missal',categoria:'ceremonario'}
+  ];
+  return[{nome:'Credência',categoria:'coroinha'},{nome:'Credência 2',categoria:'acolito'},{nome:'Missal',categoria:'ceremonario'}];
+}
+
+async function gerarEscala(){
+  const{mes,ano,adoracoes}=state.gerador;
+  const obsKey=`${ano}-${mes}`;
+  const obs=state.obsCalendario[obsKey]||{};
+  const missas=getMissasDoMes(mes,ano,adoracoes).filter(m=>!(obs[m.dia]?.bloqueado));
+  const ativos=state.members.filter(m=>m.situacao!=='inativo');
+  if(!ativos.length){alert('Cadastre os membros antes de gerar!');return;}
+  const cont={};ativos.forEach(m=>{cont[m.id]=0;});
+  const keyDia=['domingo','','','','quinta','sexta','sabado'];
+  const escala=missas.map(missa=>{
+    const dadosDia=obs[missa.dia]||{};
+    // Se tem funcoes manuais para este dia, usar elas
+    if(dadosDia.funcoesManuais&&dadosDia.funcoesManuais.length>0){
+      return{...missa,funcoes:dadosDia.funcoesManuais.map(f=>({
+        nome:f.nome,categoria:f.categoria,
+        membroId:f.membroIds?.[0]||null,
+        membroNome:f.membros?.[0]||null,
+        membrosExtras:f.membros?.slice(1)||[]
+      }))};
+    }
+    const funcoes=getFuncoes(missa);const dk=keyDia[missa.diasemana];const usados=new Set();
+    return{...missa,funcoes:funcoes.map(f=>{
+      const cands=ativos.filter(m=>m.categoria===f.categoria&&!usados.has(m.id)&&!(m.restricoes||[]).includes(dk)).sort((a,b)=>(cont[a.id]||0)-(cont[b.id]||0));
+      const e=cands[0];
+      if(e){usados.add(e.id);cont[e.id]=(cont[e.id]||0)+1;return{...f,membroId:e.id,membroNome:e.nome,membrosExtras:[]};}
+      return{...f,membroId:null,membroNome:null,membrosExtras:[]};
+    })};
+  });
+  try{
+    const key=`${ano}-${mes}`;
+    await saveEscalaDB(key,escala);
+    state.escalas[key]=escala;state.escalaMes=mes;state.escalaAno=ano;
+    toast('Escala gerada e salva!');navigate('escala');
+  }catch(e){alert('Erro ao salvar escala.');}
+}
+window.gerarEscala=gerarEscala;
+
+/* ---- ESCALA VIEW ---- */
+function changeEscalaMes(dir){
+  state.escalaMes+=dir;
+  if(state.escalaMes>11){state.escalaMes=0;state.escalaAno++;}
+  if(state.escalaMes<0){state.escalaMes=11;state.escalaAno--;}
+  renderEscala();
+}
+window.changeEscalaMes=changeEscalaMes;
+
+function renderEscala(){
+  const{escalaMes:mes,escalaAno:ano}=state;
+  document.getElementById('escalaMonthLabel').textContent=`${MESES[mes]} ${ano}`;
+  const key=`${ano}-${mes}`;const escala=state.escalas[key];
+  const cont=document.getElementById('escalaDays');const empty=document.getElementById('escalaEmpty');
+  if(!escala||!escala.length){cont.innerHTML='';empty.style.display='';return;}
+  empty.style.display='none';
+  const obs=state.obsCalendario[`${ano}-${mes}`]||{};
+  const grupos={};escala.forEach(m=>{if(!grupos[m.dia])grupos[m.dia]=[];grupos[m.dia].push(m);});
+  cont.innerHTML=Object.entries(grupos).sort((a,b)=>parseInt(a[0])-parseInt(b[0])).map(([dia,missas])=>{
+    const dow=new Date(ano,mes,parseInt(dia)).getDay();
+    const dadosDia=obs[parseInt(dia)]||{};
+    const obsBanner=dadosDia.obs?`<div class="obs-banner"><i class="ri-information-line"></i>${dadosDia.obs}</div>`:'';
+    return`<div class="day-group"><div class="day-header">${DIAS_PT[dow]}, ${dia} de ${MESES[mes]}</div>${obsBanner}${missas.map(m=>renderMissaCard(m,key)).join('')}</div>`;
+  }).join('');
+}
+window.renderEscala=renderEscala;
+
+function renderMissaCard(missa,key){
+  const dotC={coroinha:'dot-coroinha',acolito:'dot-acolito',ceremonario:'dot-ceremonario'};
+  return`<div class="missa-card">
+    <div class="missa-card-hdr">
+      <i class="ri-${missa.hora==='9h'?'sun':'moon'}-line"></i>
+      <div class="missa-tipo">${missa.tipo} · ${missa.hora}</div>
+      ${missa.adoracao?'<span class="adoracao-tag">Adoração</span>':''}
+    </div>
+    <div class="missa-card-body">
+      ${missa.funcoes.map((f,fi)=>`
+        <div class="funcao-row" onclick="openSwapModal('${key}',${missa.dia},'${missa.hora}',${fi})">
+          <div style="flex:1;">
+            <div class="funcao-nome-label">${f.nome}</div>
+            <div class="funcao-membro-name ${!f.membroNome?'vazio':''}">
+              ${f.membroNome?`<span class="funcao-dot ${dotC[f.categoria]}"></span>${f.membroNome}${f.membrosExtras&&f.membrosExtras.length?' e '+f.membrosExtras.join(', '):''}`:' Toque para definir'}
+            </div>
+          </div>
+          <i class="ri-arrow-right-s-line" style="color:var(--text-muted);font-size:18px;flex-shrink:0;"></i>
+        </div>`).join('')}
+      <div style="margin-top:10px;">
+        <button class="btn btn-outline btn-sm" onclick="adicionarFuncaoExtra('${key}',${missa.dia},'${missa.hora}')"><i class="ri-add-line"></i> Função extra</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---- SWAP ---- */
+function openSwapModal(key,dia,hora,fi){
+  state.swapContext={key,dia,hora,fi};state.showAllCats=false;
+  const missa=state.escalas[key]?.find(m=>m.dia===dia&&m.hora===hora);if(!missa)return;
+  const f=missa.funcoes[fi];
+  document.getElementById('swapInfo').innerHTML=`<strong>${f.nome}</strong> · ${catLabel(f.categoria)}`;
+  document.getElementById('swapSearch').value='';renderSwapList();
+  document.getElementById('swapModal').classList.add('open');
+}
+window.openSwapModal=openSwapModal;
+function closeSwapModal(){document.getElementById('swapModal').classList.remove('open');}
+window.closeSwapModal=closeSwapModal;
+
+function renderSwapList(){
+  if(!state.swapContext)return;
+  const{key,dia,hora,fi}=state.swapContext;
+  const missa=state.escalas[key]?.find(m=>m.dia===dia&&m.hora===hora);if(!missa)return;
+  const f=missa.funcoes[fi];
+  const search=document.getElementById('swapSearch').value.toLowerCase();
+  const mesmaCat=state.members.filter(m=>m.situacao!=='inativo'&&m.categoria===f.categoria&&(search?m.nome.toLowerCase().includes(search):true)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  const outrasCat=state.showAllCats?state.members.filter(m=>m.situacao!=='inativo'&&m.categoria!==f.categoria&&(search?m.nome.toLowerCase().includes(search):true)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')):[];
+  let html='';
+  if(mesmaCat.length){html+=`<div class="swap-section-label">${catLabel(f.categoria)}s</div>`;html+=mesmaCat.map(m=>swapItem(m,key,dia,hora)).join('');}
+  if(!state.showAllCats){html+=`<div style="height:8px;"></div><button class="btn btn-outline btn-sm btn-block" onclick="state.showAllCats=true;renderSwapList()"><i class="ri-group-line"></i> Ver todos os membros</button>`;}
+  else if(outrasCat.length){html+=`<div class="swap-section-label" style="color:var(--danger);">⚠️ Outras categorias</div>`;html+=outrasCat.map(m=>swapItem(m,key,dia,hora)).join('');}
+  if(!mesmaCat.length&&!outrasCat.length)html='<div style="color:var(--text-muted);font-size:14px;padding:10px 0;">Nenhum encontrado.</div>';
+  document.getElementById('swapList').innerHTML=html;
+}
+window.renderSwapList=renderSwapList;
+
+function swapItem(m,key,dia,hora){
+  const escalado=estaEscaladoNoDia(m.id,key,dia,hora);
+  const aviso=escalado?`<div style="font-size:11px;color:var(--danger);margin-top:2px;">⚠️ Já escalado: ${escalado}</div>`:'';
+  return`<div class="member-item" onclick="confirmSwap('${m.id}','${m.nome.replace(/'/g,"\\'")}',${!!escalado},'${(escalado||'').replace(/'/g,"\\'")}')">
+    <div class="member-avatar">${m.foto?`<img src="${m.foto}" alt="">`:getInitials(m.nome)}</div>
+    <div class="member-info"><div class="member-name">${m.nome}</div>
+    <div class="member-meta"><span class="badge ${catBadge(m.categoria)}">${catLabel(m.categoria)}</span>${m.preferencias?' · '+m.preferencias:''}</div>${aviso}</div>
+  </div>`;
+}
+
+function estaEscaladoNoDia(membroId,key,dia,hora){
+  const escala=state.escalas[key];if(!escala)return null;
+  for(const missa of escala.filter(m=>m.dia===dia&&m.hora!==hora)){
+    for(const f of missa.funcoes){if(f.membroId===membroId)return`${missa.hora} - ${f.nome}`;}
+  }
+  return null;
+}
+
+async function confirmSwap(id,nome,jaEscalado,funcaoAtual){
+  if(jaEscalado){if(!confirm(`⚠️ ${nome} já está escalado como "${funcaoAtual}" neste dia.\n\nContinuar mesmo assim?`))return;}
+  const{key,dia,hora,fi}=state.swapContext;
+  const mi=state.escalas[key].findIndex(m=>m.dia===dia&&m.hora===hora);if(mi<0)return;
+  state.escalas[key][mi].funcoes[fi].membroId=id;
+  state.escalas[key][mi].funcoes[fi].membroNome=nome;
+  try{
+    await saveEscalaDB(key,state.escalas[key]);
+    closeSwapModal();renderEscala();toast(`${nome} alocado!`);
+  }catch(e){alert('Erro ao salvar.');}
+}
+window.confirmSwap=confirmSwap;
+
+async function adicionarFuncaoExtra(key,dia,hora){
+  const nome=prompt('Nome da função extra:');if(!nome||!nome.trim())return;
+  const catInput=prompt('Categoria:\n1 - Coroinha\n2 - Acólito\n3 - Cerimoniário');
+  const cats={'1':'coroinha','2':'acolito','3':'ceremonario'};
+  const cat=cats[catInput?.trim()];if(!cat){alert('Opção inválida.');return;}
+  const mi=state.escalas[key].findIndex(m=>m.dia===dia&&m.hora===hora);if(mi<0)return;
+  state.escalas[key][mi].funcoes.push({nome:nome.trim(),categoria:cat,membroId:null,membroNome:null,membrosExtras:[]});
+  await saveEscalaDB(key,state.escalas[key]);
+  renderEscala();toast('Função extra adicionada!');
+}
+window.adicionarFuncaoExtra=adicionarFuncaoExtra;
+
+/* ---- HISTORICO ---- */
+function renderHistorico(){
+  const keys=Object.keys(state.escalas).sort().reverse();
+  const list=document.getElementById('historicoList');const empty=document.getElementById('historicoEmpty');
+  if(!keys.length){list.innerHTML='';empty.style.display='';return;}
+  empty.style.display='none';
+  list.innerHTML=keys.map(k=>{const[ano,mes]=k.split('-').map(Number);return`<div class="hist-item" onclick="verHistorico(${mes},${ano})"><div class="hist-icon"><i class="ri-calendar-check-line"></i></div><div><div class="hist-mes">${MESES[mes]} ${ano}</div><div class="hist-detalhe">${state.escalas[k].length} missas</div></div><i class="ri-arrow-right-s-line" style="color:var(--text-muted);font-size:20px;margin-left:auto;"></i></div>`;}).join('');
+}
+window.renderHistorico=renderHistorico;
+function verHistorico(mes,ano){state.escalaMes=mes;state.escalaAno=ano;navigate('escala');}
+window.verHistorico=verHistorico;
+
+/* ---- ADMIN ---- */
+function renderAdmin(){
+  const membros=[...state.members].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  const membrosList=document.getElementById('adminMembersList');
+  membrosList.innerHTML=membros.length?membros.map(m=>`
+    <label class="admin-row">
+      <input type="checkbox" class="adminMemberCheck" value="${m.id}">
+      <div class="admin-info">
+        <div class="admin-title">${m.nome}</div>
+        <div class="admin-sub">${catLabel(m.categoria)} · ${m.situacao==='inativo'?'Inativo':'Ativo'}${m.nascimento?' · '+m.nascimento.split('-').slice(1).reverse().join('/'):''}</div>
+      </div>
+    </label>`).join(''):'<div class="empty-state" style="padding:24px 12px;"><i class="ri-user-search-line"></i><p>Nenhum membro cadastrado</p></div>';
+
+  const escalasList=document.getElementById('adminEscalasList');
+  const keys=Object.keys(state.escalas).sort().reverse();
+  escalasList.innerHTML=keys.length?keys.map(k=>{
+    const[ano,mes]=k.split('-').map(Number);
+    const obsCount=Object.keys(state.obsCalendario[k]||{}).length;
+    return`<label class="admin-row">
+      <input type="checkbox" class="adminEscalaCheck" value="${k}">
+      <div class="admin-info">
+        <div class="admin-title">${MESES[mes]} ${ano}</div>
+        <div class="admin-sub">${state.escalas[k].length} missas${obsCount?' · '+obsCount+' configurações':''}</div>
+      </div>
+    </label>`;
+  }).join(''):'<div class="empty-state" style="padding:24px 12px;"><i class="ri-calendar-close-line"></i><p>Nenhuma escala salva</p></div>';
+}
+window.renderAdmin=renderAdmin;
+
+function toggleAdminChecks(className){
+  const checks=Array.from(document.querySelectorAll('.'+className));
+  if(!checks.length)return;
+  const marcar=checks.some(c=>!c.checked);
+  checks.forEach(c=>c.checked=marcar);
+}
+window.toggleAdminChecks=toggleAdminChecks;
+
+async function deleteSelectedMembers(){
+  const ids=Array.from(document.querySelectorAll('.adminMemberCheck:checked')).map(c=>c.value);
+  if(!ids.length){alert('Selecione pelo menos um membro.');return;}
+  const nomes=ids.map(id=>state.members.find(m=>m.id===id)?.nome).filter(Boolean).join(', ');
+  if(!confirm(`Excluir permanentemente ${ids.length} membro(s)?\n\n${nomes}`))return;
+  try{
+    await Promise.all(ids.map(id=>deleteMemberDB(id)));
+    state.members=state.members.filter(m=>!ids.includes(m.id));
+    renderAdmin();renderMembers();renderDashboard();
+    toast('Membro(s) excluído(s).');
+  }catch(e){
+    console.error(e);
+    alert('Erro ao excluir membro(s).');
+  }
+}
+window.deleteSelectedMembers=deleteSelectedMembers;
+
+async function deleteSelectedEscalas(){
+  const keys=Array.from(document.querySelectorAll('.adminEscalaCheck:checked')).map(c=>c.value);
+  if(!keys.length){alert('Selecione pelo menos uma escala.');return;}
+  const nomes=keys.map(k=>{const[ano,mes]=k.split('-').map(Number);return `${MESES[mes]} ${ano}`;}).join(', ');
+  if(!confirm(`Excluir permanentemente ${keys.length} escala(s)?\n\n${nomes}\n\nAs observações/configurações desses meses também serão apagadas.`))return;
+  try{
+    await Promise.all(keys.flatMap(k=>[deleteEscalaDB(k),deleteObsDB(k)]));
+    keys.forEach(k=>{delete state.escalas[k];delete state.obsCalendario[k];});
+    renderAdmin();renderHistorico();renderEscala();renderDashboard();
+    toast('Escala(s) excluída(s).');
+  }catch(e){
+    console.error(e);
+    alert('Erro ao excluir escala(s).');
+  }
+}
+window.deleteSelectedEscalas=deleteSelectedEscalas;
+
+/* ---- PDF ---- */
+function exportarPDF(){
+  const{escalaMes:mes,escalaAno:ano}=state;
+  const key=`${ano}-${mes}`;const escala=state.escalas[key];
+  if(!escala||!escala.length){toast('Nenhuma escala para exportar.');return;}
+  const obs=state.obsCalendario[`${ano}-${mes}`]||{};
+  // Agrupar pela liturgia do domingo: sabado/domingo celebram o domingo seguinte;
+  // quinta/sexta seguem a semana liturgica do domingo anterior.
+  const grupos={};escala.forEach(m=>{if(!grupos[m.dia])grupos[m.dia]=[];grupos[m.dia].push(m);});
+  const diasOrdenados=Object.keys(grupos).map(Number).sort((a,b)=>a-b);
+  const ciclos={};
+  diasOrdenados.forEach(dia=>{
+    const domingo=domingoDoCiclo(mes,ano,dia);
+    const inicio=addDias(domingo,-1);
+    const fim=addDias(domingo,5);
+    const key=dataKey(domingo);
+    if(!ciclos[key])ciclos[key]={domingo,inicio,fim,dias:[]};
+    ciclos[key].dias.push(dia);
+  });
+  let semanas=Object.values(ciclos).sort((a,b)=>a.domingo-b.domingo);
+
+  let semanasHTML=semanas.map((semana,si)=>{
+    const dias=semana.dias.sort((a,b)=>a-b);
+    const rows=[];
+    dias.forEach(dia=>{
+      const dow=new Date(ano,mes,dia).getDay();
+      const missasDia=grupos[dia];
+      const dadosDia=obs[dia]||{};
+      missasDia.forEach((missa,idx)=>{
+        const nomes=missa.funcoes.filter(f=>f.membroNome).map(f=>{
+          let n=f.membroNome;
+          if(f.membrosExtras&&f.membrosExtras.length)n+=', '+f.membrosExtras.join(', ');
+          return n;
+        }).join(', ')||'—';
+        rows.push(`<tr>
+          ${idx===0?`<td rowspan="${missasDia.length}" style="vertical-align:middle;white-space:nowrap;font-weight:700;">${String(dia).padStart(2,'0')}/${String(mes+1).padStart(2,'0')}</td>
+          <td rowspan="${missasDia.length}" style="vertical-align:middle;font-weight:700;">${DIAS_PT[dow].toUpperCase()}${dadosDia.obs?`<div class="pdf-obs">${dadosDia.obs}</div>`:''}${dadosDia.bloqueado?'<div class="pdf-bloqueado">NÃO HAVERÁ MISSA</div>':''}</td>`:''}
+          <td style="white-space:nowrap;">${missa.hora}${missa.adoracao?'<br><small style="color:#854F0B;">Adoração</small>':''}</td>
+          <td>${nomes}</td>
+        </tr>`);
+      });
+    });
+    const d1=semana.inicio;const dN=semana.fim;
+    const domingo=semana.domingo;
+    const lit=liturgiaDoDia(domingo.getMonth(),domingo.getFullYear(),domingo.getDate());
+    const tituloSemana=lit?lit.nome:`Semana ${si+1}`;
+    const range=`${String(d1.getDate()).padStart(2,'0')}/${String(d1.getMonth()+1).padStart(2,'0')} - ${String(dN.getDate()).padStart(2,'0')}/${String(dN.getMonth()+1).padStart(2,'0')}`;
+    return`<div class="pdf-semana">
+      <div class="pdf-week-icon"><i class="ri-calendar-event-line"></i></div>
+      <div class="pdf-semana-header">Semana ${si+1} · ${tituloSemana} · ${range}</div>
+      <table class="pdf-table"><thead><tr><th><i class="ri-calendar-line"></i> Data</th><th><i class="ri-goblet-line"></i> Missa</th><th><i class="ri-time-line"></i> Hora</th><th><i class="ri-team-fill"></i> Servidores</th></tr></thead>
+      <tbody>${rows.join('')}</tbody></table>
+    </div>`;
+  }).join('');
+
+  document.getElementById('pdfView').innerHTML=`<div class="pdf-wrap">
+    <div class="pdf-header">
+      <img class="pdf-saint-img" src="sao-tarcisio.png" alt="São Tarcísio">
+      <div class="pdf-title-block">
+        <div class="pdf-brand">Escala</div>
+        <div class="pdf-brand-sub">Coroinhas e Acólitos</div>
+        <div class="pdf-paroquia">Paróquia Santa Maria - Diocese de Piracicaba</div>
+        <div class="pdf-prayer">São Tarcísio, padroeiro dos coroinhas, rogai por nós.</div>
+      </div>
+      <div class="pdf-side">
+        <div class="pdf-mes"><i class="ri-calendar-2-line"></i> ${MESES[mes]} ${ano}</div>
+        <div class="pdf-parish-mark"><i class="ri-church-line pdf-parish-icon"></i><span>Paróquia<br>Santa Maria</span></div>
+      </div>
+    </div>
+    <div class="pdf-semanas">${semanasHTML}</div>
+    <div class="pdf-footer">
+      <div class="pdf-quote">
+        <div class="pdf-prayer-icon"><i class="ri-hand-heart-line"></i></div>
+        <div>
+          <div class="pdf-quote-text">"Servir ao altar é servir com amor a Deus e à comunidade."</div>
+          <div class="pdf-quote-author">— São Tarcísio</div>
+        </div>
+      </div>
+      <div class="pdf-important">
+        <div class="pdf-important-title"><i class="ri-information-line"></i> Importante</div>
+        Em caso de ausência, avise com antecedência ao responsável.
+      </div>
+    </div>
+  </div>`;
+  toast('Preparando PDF...');
+  setTimeout(()=>window.print(),600);
+}
+window.exportarPDF=exportarPDF;
+
+/* ---- WHATSAPP ---- */
+function openWppModal(){
+  const{escalaMes:mes,escalaAno:ano}=state;
+  const key=`${ano}-${mes}`;const escala=state.escalas[key];
+  if(!escala||!escala.length){toast('Nenhuma escala gerada para este mês.');return;}
+  document.getElementById('wppNumero').value='';
+  const obs=state.obsCalendario[`${ano}-${mes}`]||{};
+  const grupos={};escala.forEach(m=>{if(!grupos[m.dia])grupos[m.dia]=[];grupos[m.dia].push(m);});
+  const hoje=new Date();
+  const diasOrdenados=Object.keys(grupos).map(Number).sort((a,b)=>a-b);
+  const proximos=diasOrdenados.filter(d=>{const dt=new Date(ano,mes,d);const diff=(dt-hoje)/(1000*60*60*24);return diff>=-1&&diff<=8;});
+  const diasMostrar=proximos.length?proximos:diasOrdenados.slice(0,6);
+  document.getElementById('wppMissasList').innerHTML=diasMostrar.map(dia=>{
+    const dow=new Date(ano,mes,dia).getDay();
+    const dadosDia=obs[dia]||{};
+    return grupos[dia].map(m=>`
+      <div class="wpp-check-item selected" id="wpp-${dia}-${m.hora.replace(':','')}" onclick="this.classList.toggle('selected');this.querySelector('input').checked=this.classList.contains('selected')">
+        <input type="checkbox" checked onclick="event.stopPropagation();">
+        <div>
+          <div class="wpp-label">${DIAS_PT[dow]}, ${dia}/${mes+1} · ${m.hora}</div>
+          <div class="wpp-sub">${m.tipo}${dadosDia.bloqueado?' · Sem missa':dadosDia.obs?' · '+dadosDia.obs:''}</div>
+        </div>
+      </div>`).join('');
+  }).join('');
+  document.getElementById('wppModal').classList.add('open');
+}
+window.openWppModal=openWppModal;
+function closeWppModal(){document.getElementById('wppModal').classList.remove('open');}
+window.closeWppModal=closeWppModal;
+
+async function compartilharTextoWhatsApp(titulo,texto){
+  if(navigator.share){
+    try{
+      await navigator.share({title:titulo,text:texto});
+      toast('Escolha o grupo no WhatsApp para enviar.');
+      return;
+    }catch(e){
+      if(e?.name==='AbortError')return;
+      console.warn('Compartilhamento nativo indisponivel:',e);
+    }
+  }
+  await copiarTexto(texto);
+  window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`,'_blank');
+  toast('Mensagem copiada. Escolha o grupo no WhatsApp.');
+}
+
+async function enviarWhatsApp(){
+  const{escalaMes:mes,escalaAno:ano}=state;
+  const key=`${ano}-${mes}`;const escala=state.escalas[key];
+  const obs=state.obsCalendario[`${ano}-${mes}`]||{};
+  const selecionados=Array.from(document.querySelectorAll('#wppMissasList .wpp-check-item.selected'));
+  if(!selecionados.length){alert('Selecione pelo menos uma missa.');return;}
+
+  let msg='Bom dia!\nSegue a escala:\n';
+
+  selecionados.forEach(el=>{
+    const rawId=el.id.replace('wpp-','');
+    const parts=rawId.split('-');
+    const dia=parseInt(parts[0]);
+    const hora=parts[1]==='9h'?'9h':'19h';
+    const dow=new Date(ano,mes,dia).getDay();
+    const missa=escala.find(m=>m.dia===dia&&m.hora===hora);
+    if(!missa)return;
+    const dadosDia=obs[dia]||{};
+
+    if(dadosDia.bloqueado){
+      msg+=`\n- ${DIAS_PT[dow]} ${hora} - NAO HAVERA MISSA.`;
+      return;
+    }
+
+    const obsTexto=dadosDia.obs?` (${dadosDia.obs})`:'';
+    msg+=`\n- ${DIAS_PT[dow]} ${hora} - Missa${missa.adoracao?' com Adoracao':''}${obsTexto}`;
+
+    // Agrupar funcoes de forma organizada
+    const missal=missa.funcoes.find(f=>f.nome==='Missal');
+    const procissao=missa.funcoes.find(f=>f.nome==='Procissão'||f.nome==='ProcissÃ£o');
+    const turibulo=missa.funcoes.find(f=>f.nome==='Turíbulo'||f.nome==='TurÃ­bulo');
+    const naveta=missa.funcoes.find(f=>f.nome==='Naveta');
+    const cred2=missa.funcoes.find(f=>f.nome==='Credência 2'||f.nome==='CredÃªncia 2');
+    const velas=missa.funcoes.filter(f=>f.nome.startsWith('Vela'));
+    const credencas=missa.funcoes.filter(f=>f.nome==='Credência'||f.nome==='CredÃªncia');
+    const extras=missa.funcoes.filter(f=>!['Missal','Procissão','ProcissÃ£o','Turíbulo','TurÃ­bulo','Naveta','Credência 2','CredÃªncia 2','Vela 1','Vela 2','Credência','CredÃªncia'].includes(f.nome));
+
+    if(missal?.membroNome)msg+=`\nMissal: ${missal.membroNome}.`;
+    if(procissao?.membroNome)msg+=`\nCerimoniario: ${procissao.membroNome}.`;
+    if(turibulo?.membroNome&&naveta?.membroNome)msg+=`\nTuribulo/Naveta: ${turibulo.membroNome} e ${naveta.membroNome}.`;
+    else if(turibulo?.membroNome)msg+=`\nTuribulo: ${turibulo.membroNome}.`;
+    else if(naveta?.membroNome)msg+=`\nNaveta: ${naveta.membroNome}.`;
+    if(cred2?.membroNome)msg+=`\nAcolito credencia: ${cred2.membroNome}.`;
+    if(velas.some(v=>v.membroNome))msg+=`\nVelas: ${velas.filter(v=>v.membroNome).map(v=>v.membroNome).join(' e ')}.`;
+    if(credencas.some(c=>c.membroNome)){
+      const todos=[...credencas.filter(c=>c.membroNome).map(c=>c.membroNome)];
+      if(cred2?.membroNome)todos.push(cred2.membroNome);
+      msg+=`\nCredencia: ${credencas.filter(c=>c.membroNome).map(c=>c.membroNome).join(', ')}.`;
+    }
+    extras.forEach(f=>{if(f.membroNome)msg+=`\n${f.nome}: ${f.membroNome}.`;});
+  });
+
+  msg+='\n\nChegar com 30 minutos de antecedencia.\nMeninas: cabelo preso.\nMamaes/Papais que estiverem na missa, tirem fotos e mandem no privado.\nObrigada!\nQue o nosso fim de semana seja tranquilo, feliz e cheio de luz.';
+
+  closeWppModal();
+  await compartilharTextoWhatsApp('Escala pastoral',msg);
+}
+window.enviarWhatsApp=enviarWhatsApp;
+
+// INIT
+loadAllData();
+</script>
+</body>
+</html>
