@@ -1809,6 +1809,7 @@ window.enviarWhatsApp=enviarWhatsApp;
 
 /* ---- CARTAZ IMAGEM ---- */
 let cartazImagemURL=null;
+let cartazImagemBlob=null;
 
 function escapeHTML(v){
   return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -1941,8 +1942,23 @@ async function gerarImagemCartaz(){
   cartazEl.innerHTML=montarCartazHTML(missasSel,mes,ano,obs,obsExtra);
   await new Promise(r=>setTimeout(r,700));
   try{
-    const canvas=await window.html2canvas(cartazEl,{scale:2.5,useCORS:true,allowTaint:true,backgroundColor:'#FDFAF4',width:600,logging:false});
-    cartazImagemURL=canvas.toDataURL('image/png');
+    const escalaRender=Math.min(4.5,Math.max(4,window.devicePixelRatio||2));
+    const canvas=await window.html2canvas(cartazEl,{
+      scale:escalaRender,
+      useCORS:true,
+      allowTaint:true,
+      backgroundColor:'#FDFAF4',
+      width:cartazEl.scrollWidth,
+      height:cartazEl.scrollHeight,
+      logging:false,
+      imageTimeout:15000
+    });
+    const ctx=canvas.getContext('2d');
+    if(ctx)ctx.imageSmoothingQuality='high';
+    cartazImagemBlob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+    if(!cartazImagemBlob)throw new Error('Nao foi possivel gerar o arquivo da imagem.');
+    if(cartazImagemURL)URL.revokeObjectURL(cartazImagemURL);
+    cartazImagemURL=URL.createObjectURL(cartazImagemBlob);
     document.getElementById('imgPreviewCanvas').innerHTML=`<img src="${cartazImagemURL}" alt="Cartaz da escala">`;
     document.getElementById('imgPreviewModal').classList.remove('hidden');
   }catch(e){
@@ -1954,16 +1970,16 @@ window.gerarImagemCartaz=gerarImagemCartaz;
 
 function fecharPreviewImagem(){
   document.getElementById('imgPreviewModal').classList.add('hidden');
+  if(cartazImagemURL)URL.revokeObjectURL(cartazImagemURL);
   cartazImagemURL=null;
+  cartazImagemBlob=null;
 }
 window.fecharPreviewImagem=fecharPreviewImagem;
 
 async function compartilharImagemCartaz(){
-  if(!cartazImagemURL){toast('Gere a imagem primeiro.');return;}
+  if(!cartazImagemBlob){toast('Gere a imagem primeiro.');return;}
   try{
-    const res=await fetch(cartazImagemURL);
-    const blob=await res.blob();
-    const file=new File([blob],'escala-pastoral.png',{type:'image/png'});
+    const file=new File([cartazImagemBlob],'escala-pastoral-alta-qualidade.png',{type:'image/png'});
     if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
       await navigator.share({title:'Escala Pastoral',files:[file]});
       toast('Imagem compartilhada!');
@@ -1982,7 +1998,7 @@ function baixarImagemCartaz(){
   if(!cartazImagemURL){toast('Gere a imagem primeiro.');return;}
   const a=document.createElement('a');
   a.href=cartazImagemURL;
-  a.download='escala-pastoral.png';
+  a.download='escala-pastoral-alta-qualidade.png';
   a.click();
   toast('Imagem baixada!');
 }
