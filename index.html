@@ -630,6 +630,10 @@ body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min
     <!-- TAB ESCALA MANUAL -->
     <div id="calTabEscala" style="display:none;">
       <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Defina membros extras ou fixos por função para este dia. Isso substitui a alocação automática.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+        <button class="btn btn-outline btn-sm" onclick="preencherFuncoesManuais('simples')">Missa simples</button>
+        <button class="btn btn-outline btn-sm" onclick="preencherFuncoesManuais('solene')">Missa solene</button>
+      </div>
       <div id="calEscalaFuncoes"></div>
       <button class="btn btn-outline btn-sm btn-block" style="margin-top:8px;" onclick="addFuncaoManual()"><i class="ri-add-line"></i> Adicionar função</button>
     </div>
@@ -1295,13 +1299,46 @@ function renderFuncoesManuais(){
     <div class="funcao-extra-item">
       <div style="flex:1;">
         <div class="funcao-extra-nome">${f.nome}</div>
-        <div class="funcao-extra-membros">${f.membros&&f.membros.length?f.membros.join(', '):'Nenhum membro'}</div>
+        <select class="form-select" style="margin-top:6px;padding:8px 10px;font-size:13px;" onchange="setFuncaoManualMembro(${i},this.value)">
+          ${optionsMembrosFuncao(f)}
+        </select>
       </div>
-      <button onclick="editFuncaoManual(${i})" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:16px;"><i class="ri-edit-line"></i></button>
       <button onclick="removeFuncaoManual(${i})" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:16px;"><i class="ri-delete-bin-line"></i></button>
     </div>`).join('');
 }
 window.renderFuncoesManuais=renderFuncoesManuais;
+
+function optionsMembrosFuncao(f){
+  const permitidas=categoriasPermitidas(f);
+  const membros=state.members.filter(m=>m.situacao!=='inativo'&&permitidas.includes(m.categoria)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  const atual=f.membroIds?.[0]||'';
+  return `<option value="">Selecionar membro...</option>`+membros.map(m=>`<option value="${m.id}" ${m.id===atual?'selected':''}>${m.nome} · ${catLabel(m.categoria)}</option>`).join('');
+}
+
+function setFuncaoManualMembro(i,id){
+  const f=state.funcoesManuaisTemp[i];if(!f)return;
+  const m=state.members.find(x=>x.id===id);
+  f.membroIds=m?[m.id]:[];
+  f.membros=m?[m.nome]:[];
+}
+window.setFuncaoManualMembro=setFuncaoManualMembro;
+
+function funcoesBaseManual(tipo){
+  const base=[
+    {nome:'Vela 1',categoria:'coroinha'},{nome:'Vela 2',categoria:'coroinha'},
+    {nome:'Credência',categoria:'coroinha'},{nome:'Credência 2',categoria:'acolito'},
+    {nome:'Missal',categoria:'ceremonario'},{nome:'Procissão',categoria:'ceremonario'}
+  ];
+  if(tipo==='solene')base.splice(4,0,{nome:'Turíbulo',categoria:'acolito'},{nome:'Naveta',categoria:'acolito'});
+  return base.map(f=>({...f,membros:[],membroIds:[]}));
+}
+
+function preencherFuncoesManuais(tipo){
+  if(state.funcoesManuaisTemp.length&&!confirm('Substituir as funções manuais atuais por este modelo?'))return;
+  state.funcoesManuaisTemp=funcoesBaseManual(tipo);
+  renderFuncoesManuais();
+}
+window.preencherFuncoesManuais=preencherFuncoesManuais;
 
 function addFuncaoManual(){
   const nome=prompt('Nome da função:\n(ex: Credência, Vela 1, Turíbulo...)');
@@ -1310,25 +1347,13 @@ function addFuncaoManual(){
   const cats={'1':'coroinha','2':'acolito','3':'ceremonario'};
   const categoria=cats[cat?.trim()];
   if(!categoria){alert('Categoria inválida.');return;}
-  const membrosDisp=state.members.filter(m=>m.situacao!=='inativo'&&m.categoria===categoria).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
-  const lista=membrosDisp.map((m,i)=>`${i+1}. ${m.nome}`).join('\n');
-  const selecao=prompt(`Selecione os membros (números separados por vírgula):\n${lista}`);
-  if(!selecao)return;
-  const indices=selecao.split(',').map(s=>parseInt(s.trim())-1).filter(i=>i>=0&&i<membrosDisp.length);
-  const membros=indices.map(i=>membrosDisp[i].nome);
-  const membroIds=indices.map(i=>membrosDisp[i].id);
-  state.funcoesManuaisTemp.push({nome,categoria,membros,membroIds});
+  state.funcoesManuaisTemp.push({nome,categoria,membros:[],membroIds:[]});
   renderFuncoesManuais();
 }
 window.addFuncaoManual=addFuncaoManual;
 
 function removeFuncaoManual(i){state.funcoesManuaisTemp.splice(i,1);renderFuncoesManuais();}
 window.removeFuncaoManual=removeFuncaoManual;
-
-function editFuncaoManual(i){
-  removeFuncaoManual(i);addFuncaoManual();
-}
-window.editFuncaoManual=editFuncaoManual;
 
 function closeCalDiaModal(){document.getElementById('calDiaModal').classList.remove('open');}
 window.closeCalDiaModal=closeCalDiaModal;
@@ -1450,7 +1475,8 @@ function membroDisponivel(membro,missa,excecoesMes=[]){
 
 function categoriasPermitidas(funcao){
   if(funcao.categoria==='ceremonario')return ['ceremonario'];
-  if(funcao.nome.includes('Turíbulo')||funcao.nome.includes('Naveta'))return ['acolito'];
+  const nome=(funcao.nome||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  if(nome.includes('turibulo')||nome.includes('naveta'))return ['acolito'];
   return ['coroinha','acolito'];
 }
 
