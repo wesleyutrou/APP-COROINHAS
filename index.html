@@ -619,6 +619,13 @@ body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--text);min
           <span style="color:var(--danger);">Bloquear este dia (não haverá missa)</span>
         </label>
       </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="calDiaTodos" style="accent-color:var(--blue);width:16px;height:16px;">
+          <span>Chamar todos / definir funções por enquete no WhatsApp</span>
+        </label>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">Na escala aparecerá “Todos” e um aviso de que as funções serão definidas conforme a resposta no grupo.</div>
+      </div>
     </div>
     <!-- TAB ESCALA MANUAL -->
     <div id="calTabEscala" style="display:none;">
@@ -1199,7 +1206,7 @@ function renderCalendario(){
     if(lit?.solene)cls+=' solenidade';
     if(!temMissa)cls+=' sem-missa';
     else if(bloqueado){cls+=' bloqueado';dots=`<div class="cal-dot cal-dot-red"></div>`;}
-    else if(temObs||temEscala){cls+=' tem-obs';dots=`<div class="cal-dot cal-dot-gold"></div>`;}
+    else if(temObs||temEscala||dadosDia.todos){cls+=' tem-obs';dots=`<div class="cal-dot cal-dot-gold"></div>`;}
     else cls+=' tem-missa';
     const onclick=temMissa?`onclick="openCalDia(${d})"`:'' ;
     cells+=`<div class="${cls}" ${onclick}><span class="cal-num">${d}</span>${lit?`<div class="cal-liturgia">${lit.curto}</div>`:''}${dots}</div>`;
@@ -1274,6 +1281,7 @@ function openCalDia(dia){
   document.getElementById('calDiaTitle').textContent=`${DIAS_PT[new Date(ano,mes,dia).getDay()]}, ${dia}/${mes+1}/${ano}${lit?' · '+lit.nome:''}`;
   document.getElementById('calDiaObs').value=obs.obs||'';
   document.getElementById('calDiaBloqueado').checked=obs.bloqueado||false;
+  document.getElementById('calDiaTodos').checked=obs.todos||false;
   renderFuncoesManuais();
   switchCalTab('obs');
   document.getElementById('calDiaModal').classList.add('open');
@@ -1330,9 +1338,10 @@ async function saveCalDia(){
   if(!state.obsCalendario[obsKey])state.obsCalendario[obsKey]={};
   const obs=document.getElementById('calDiaObs').value.trim();
   const bloqueado=document.getElementById('calDiaBloqueado').checked;
+  const todos=document.getElementById('calDiaTodos').checked;
   const funcoesManuais=state.funcoesManuaisTemp;
-  if(!obs&&!bloqueado&&!funcoesManuais.length){delete state.obsCalendario[obsKey][dia];}
-  else{state.obsCalendario[obsKey][dia]={obs,bloqueado,funcoesManuais};}
+  if(!obs&&!bloqueado&&!todos&&!funcoesManuais.length){delete state.obsCalendario[obsKey][dia];}
+  else{state.obsCalendario[obsKey][dia]={obs,bloqueado,todos,funcoesManuais};}
   try{
     await saveObsDB(obsKey,state.obsCalendario[obsKey]);
     closeCalDiaModal();renderCalendario();
@@ -1446,6 +1455,16 @@ function categoriasPermitidas(funcao){
 }
 
 function pairKey(a,b){return [a,b].sort().join('|');}
+function funcoesTodos(){
+  return [{
+    nome:'Todos',
+    categoria:'coroinha',
+    membroId:null,
+    membroNome:'Todos',
+    membrosExtras:[],
+    aviso:'Funções serão definidas mediante resposta na enquete do grupo de WhatsApp.'
+  }];
+}
 
 async function gerarEscala(){
   const{mes,ano,adoracoes}=state.gerador;
@@ -1459,6 +1478,7 @@ async function gerarEscala(){
   const pairCount={};
   const escala=missas.map(missa=>{
     const dadosDia=obs[missa.dia]||{};
+    if(dadosDia.todos)return{...missa,funcoes:funcoesTodos()};
     // Se tem funcoes manuais para este dia, usar elas
     if(dadosDia.funcoesManuais&&dadosDia.funcoesManuais.length>0){
       return{...missa,funcoes:dadosDia.funcoesManuais.map(f=>({
@@ -1517,7 +1537,8 @@ function renderEscala(){
     const dow=new Date(ano,mes,parseInt(dia)).getDay();
     const dadosDia=obs[parseInt(dia)]||{};
     const obsBanner=dadosDia.obs?`<div class="obs-banner"><i class="ri-information-line"></i>${dadosDia.obs}</div>`:'';
-    return`<div class="day-group"><div class="day-header">${DIAS_PT[dow]}, ${dia} de ${MESES[mes]}</div>${obsBanner}${missas.map(m=>renderMissaCard(m,key)).join('')}</div>`;
+    const todosBanner=dadosDia.todos?`<div class="obs-banner"><i class="ri-whatsapp-line"></i> Todos convocados. As funções serão definidas mediante resposta na enquete do grupo de WhatsApp.</div>`:'';
+    return`<div class="day-group"><div class="day-header">${DIAS_PT[dow]}, ${dia} de ${MESES[mes]}</div>${obsBanner}${todosBanner}${missas.map(m=>renderMissaCard(m,key)).join('')}</div>`;
   }).join('');
 }
 window.renderEscala=renderEscala;
@@ -1538,6 +1559,7 @@ function renderMissaCard(missa,key){
             <div class="funcao-membro-name ${!f.membroNome?'vazio':''}">
               ${f.membroNome?`<span class="funcao-dot ${dotC[f.categoria]}"></span>${f.membroNome}${f.membrosExtras&&f.membrosExtras.length?' e '+f.membrosExtras.join(', '):''}`:' Toque para definir'}
             </div>
+            ${f.aviso?`<div style="font-size:11px;color:var(--text-muted);margin-top:3px;">${f.aviso}</div>`:''}
           </div>
           <i class="ri-arrow-right-s-line" style="color:var(--text-muted);font-size:18px;flex-shrink:0;"></i>
         </div>`).join('')}
@@ -1794,6 +1816,7 @@ function exportarPDF(){
         const nomes=missa.funcoes.filter(f=>f.membroNome).map(f=>{
           let n=f.membroNome;
           if(f.membrosExtras&&f.membrosExtras.length)n+=', '+f.membrosExtras.join(', ');
+          if(f.aviso)n+=` (${f.aviso})`;
           return n;
         }).join(', ')||'—';
         rows.push(`<tr>
@@ -1943,6 +1966,11 @@ async function enviarWhatsApp(){
 
     const obsTexto=dadosDia.obs?` (${dadosDia.obs})`:'';
     msg+=`\n✅ *${DIAS_PT[dow]} ${hora}* - Missa${missa.adoracao?' com Adoração':''}${obsTexto}`;
+    if(dadosDia.todos||missa.funcoes.some(f=>f.nome==='Todos')){
+      msg+=`\nTodos: funções serão definidas mediante resposta na enquete do grupo de WhatsApp.`;
+      msg+='\n';
+      return;
+    }
 
     // Agrupar funcoes de forma organizada
     const missal=missa.funcoes.find(f=>f.nome==='Missal');
@@ -2010,6 +2038,9 @@ function getFuncoesCartaz(missa){
 }
 
 function montarLinhasFuncoesCartaz(missa){
+  if(missa.funcoes?.some(f=>f.nome==='Todos')){
+    return '<div class="cartaz-obs" style="font-weight:800;">Todos convocados. As funções serão definidas mediante resposta na enquete do grupo de WhatsApp.</div>';
+  }
   const{missal,procissao,turibulo,naveta,cred2,velas,credencas,extras}=getFuncoesCartaz(missa);
   let html='<div class="cartaz-funcoes-wrap">';
   const row=(icon,nome,membros,classe='secundario')=>`<div class="cartaz-funcao-row ${classe==='destaque-nome'?'destaque':''}"><span class="cartaz-funcao-icon">${icon}</span><span class="cartaz-funcao-nome">${escapeHTML(nome)}:</span><span class="cartaz-funcao-membros ${classe}">${escapeHTML(membros)}</span></div>`;
